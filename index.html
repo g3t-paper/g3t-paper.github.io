@@ -1,0 +1,2428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>G3T Up! Gravity Aligned Coordinate Frames Simplify Pointmap Processing | Project Page</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬆️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <!-- Async CSS — no longer render-blocking -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" /></noscript>
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" /></noscript>
+  <!-- Preload viewer config so it's in-flight while Three.js parses -->
+  <link rel="preload" href="assets/viewer_config.json" as="fetch" crossorigin />
+  <!-- MathJax deferred — no longer render-blocking -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Google Sans', 'Inter', sans-serif; color: #1a1a1a; background: #fff; line-height: 1.65; }
+    img, video { display: block; max-width: 100%; }
+
+    /* ── Layout ── */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Sections ── */
+    .section { padding: 72px 0; }
+    .section--alt { background: #f7f7f7; }
+    .section-heading {
+      font-size: 1.75rem; font-weight: 700;
+      margin-bottom: 20px; letter-spacing: -0.02em;
+    }
+    .section-text {
+      font-size: 1rem; color: #444;
+      margin-bottom: 40px;
+    }
+
+    /* ── Publication Hero ── */
+    .pub-hero {
+      text-align: center;
+      padding: 40px 24px 32px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .publication-title {
+      font-family: 'Google Sans', 'Inter', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      line-height: 1.2; max-width: 860px;
+      margin: 0 auto 24px;
+    }
+    .publication-authors {
+      font-family: 'Google Sans', 'Inter', sans-serif;
+      font-size: 1.2rem; color: #333;
+      margin-bottom: 4px;
+    }
+    .publication-authors a {
+      color: hsl(204, 86%, 53%);
+      text-decoration: none;
+    }
+    .publication-authors a:hover { text-decoration: underline; }
+    .author-block { display: inline-block; }
+    sup { font-size: 0.68em; color: #666; }
+    .publication-links {
+      display: flex; gap: 12px;
+      justify-content: center; flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    .pub-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 9999px;
+      font-size: 0.95rem; font-weight: 500;
+      text-decoration: none; background: #1a1a1a; color: #fff;
+      transition: background 0.18s;
+    }
+    .pub-btn:hover { background: #333; }
+    .pub-btn .icon { display: flex; align-items: center; font-size: 1rem; }
+
+    /* ── Video pair ── */
+    .video-pair {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 16px;
+    }
+    .video-item { display: flex; flex-direction: column; align-items: center; }
+    .video-item video {
+      width: 100%; border-radius: 8px;
+      background: #111; aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+    .media-label {
+      font-size: 0.82rem; color: #777;
+      margin-top: 7px; font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Shared image-strip label ── */
+    .carousel-label {
+      text-align: center; font-size: 0.82rem;
+      color: #777; font-weight: 500; letter-spacing: 0.03em;
+    }
+
+    /* ── Fixed 5-option picker (Section 4) ── */
+    .fixed-options { display: flex; gap: 10px; margin-bottom: 8px; justify-content: center; }
+    .fixed-option {
+      flex: 0 0 calc(20% - 8px); cursor: pointer; border-radius: 6px;
+      overflow: hidden; border: 3px solid transparent;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .fixed-option:hover { transform: scale(1.04); }
+    .fixed-option.active { border-color: #1a1a1a; }
+    .fixed-option img {
+      width: 100%; aspect-ratio: 4/3;
+      object-fit: cover; display: block;
+    }
+
+    /* ── Alignment figure row ── */
+    .align-figure-row {
+      display: flex; gap: 1.5rem; align-items: flex-end; justify-content: center;
+    }
+    @media (max-width: 640px) {
+      .align-figure-row { flex-direction: column; align-items: center; }
+      .align-figure-row figure img { max-height: none; width: 100%; }
+    }
+
+    /* ── Method figure ── */
+    .method-figure { text-align: center; margin-top: 8px; }
+    .method-figure img {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0; margin: 0 auto;
+    }
+    .figure-caption {
+      font-size: 0.88rem; color: #666;
+      margin-top: 12px; max-width: 740px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* ── Visualization note / quote block ── */
+    .viz-note {
+      background: #f9f9f9;
+      border-left: 3px solid #1a1a1a;
+      border-radius: 0 6px 6px 0;
+      padding: 13px 18px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+      color: #444;
+      line-height: 1.6;
+    }
+    .viz-note strong { color: #1a1a1a; }
+    .viz-note-title {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+      margin-bottom: 7px;
+    }
+    .viz-note-title i { margin-right: 5px; }
+
+    /* ── Alignment trio (Section 5) ── */
+    .align-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .align-videos { display: flex; flex-wrap: nowrap; gap: 16px; margin-bottom: 8px; justify-content: center; }
+    .align-videos .viewer-item { flex: 1; min-width: 0; }
+    .align-videos video {
+      width: 100%; border-radius: 8px; display: block;
+      background: #111; aspect-ratio: 4/3; object-fit: cover;
+      cursor: pointer;
+    }
+
+    /* ── 3-D viewers (Section 6) ── */
+    .viewer-pair {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 16px;
+    }
+    .viewer-item { display: flex; flex-direction: column; align-items: center; }
+    .viewer-canvas {
+      width: 100%; aspect-ratio: 4/3;
+      border-radius: 8px; overflow: hidden;
+      background: #ffffff; position: relative;
+    }
+    .viewer-canvas canvas:not(.inferno-legend) { width: 100% !important; height: 100% !important; display: block; }
+    .viewer-loading {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #9ca3af; font-size: 0.88rem;
+      pointer-events: none;
+    }
+    .align-pause-btn {
+      position: absolute; top: 8px; right: 8px; z-index: 10;
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1.5px solid rgba(0,0,0,0.18); background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; color: #333;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .align-pause-btn:hover { background: rgba(255,255,255,1); border-color: #1a1a1a; }
+    .viewer-split-line {
+      position: absolute; top: 0; bottom: 0;
+      width: 2px; background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 6px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      transform: translateX(-1px);
+      left: 50%;
+    }
+    .viewer-split-handle {
+      position: absolute; top: 50%; left: 50%;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #1a1a1a;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+      transform: translate(-50%, -50%);
+      cursor: ew-resize;
+      pointer-events: auto;
+      display: flex; align-items: center; justify-content: center;
+      color: #1a1a1a; font-size: 0.85rem; line-height: 1;
+      user-select: none;
+    }
+
+    /* ── Inferno colormap legend (teaser section) ── */
+    .inferno-legend {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 52px;
+      height: calc(100% - 50px);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    /* ── Split-view RGB / Height labels ── */
+    .viewer-split-overlay {
+      position: absolute;
+      bottom: 8px;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: monospace;
+      letter-spacing: 0.05em;
+      color: rgba(30, 30, 30, 0.9);
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 11;
+    }
+    .viewer-split-overlay-rgb    { left: 8px; }
+    .viewer-split-overlay-height { right: 8px; }
+
+
+    /* ── Inferno color patch indicators ──
+       Colors computed from the shader polynomial: inferno(abs(sin(normY·π·20 + phase)))
+       PHASE_SPEED = 2 rad/s → period = π/2 ≈ 1.57 s.
+       Uniform: solid color cycling as phase advances (flat surface → constant normY).
+       Gradient: 9-stop zoom-in slice (normY ∈ [0, 0.15] → ~1.5 visible cycles). */
+    @keyframes inferno-uniform {
+      0%    { background-color: #000000; }
+      12.5% { background-color: #8d2069; }
+      25%   { background-color: #f47714; }
+      37.5% { background-color: #f4e450; }
+      50%   { background-color: #faffa7; }
+      62.5% { background-color: #f4e450; }
+      75%   { background-color: #f47714; }
+      87.5% { background-color: #8d2069; }
+      100%  { background-color: #000000; }
+    }
+
+    @keyframes inferno-gradient {
+      0%    { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #000000,#cd4341,#f4e450,#f6fc8e,#f47714,#3f0d5f,#8d2069,#fab318,#faffa7); }
+      12.5% { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #8d2069,#fab318,#faffa7,#fab318,#8d2069,#3f0d5f,#f47714,#f6fc8e,#f4e450); }
+      25%   { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #f47714,#f6fc8e,#f4e450,#cd4341,#000000,#cd4341,#f4e450,#f6fc8e,#f47714); }
+      37.5% { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #f4e450,#f6fc8e,#f47714,#3f0d5f,#8d2069,#fab318,#faffa7,#fab318,#8d2069); }
+      50%   { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #faffa7,#fab318,#8d2069,#3f0d5f,#f47714,#f6fc8e,#f4e450,#cd4341,#000000); }
+      62.5% { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #f4e450,#cd4341,#000000,#cd4341,#f4e450,#f6fc8e,#f47714,#3f0d5f,#8d2069); }
+      75%   { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #f47714,#3f0d5f,#8d2069,#fab318,#faffa7,#fab318,#8d2069,#3f0d5f,#f47714); }
+      87.5% { animation-timing-function: steps(1,end); background: linear-gradient(135deg, #8d2069,#3f0d5f,#f47714,#f6fc8e,#f4e450,#cd4341,#000000,#cd4341,#f4e450); }
+      100%  {                                           background: linear-gradient(135deg, #000000,#cd4341,#f4e450,#f6fc8e,#f47714,#3f0d5f,#8d2069,#fab318,#faffa7); }
+    }
+
+    .patch-wrap {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      line-height: 1;
+    }
+
+    .color-patch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.18);
+      flex-shrink: 0;
+    }
+
+    .color-patch-uniform {
+      animation: inferno-uniform 1.57s linear infinite;
+    }
+
+    .color-patch-gradient {
+      animation: inferno-gradient 1.57s linear infinite;
+    }
+
+    .kw-blue  { color: #4a90d9; font-weight: 700; }
+    .kw-red   { color: #d94a4a; font-weight: 700; }
+    .kw-green { color: #4aad52; font-weight: 700; }
+
+    /* ── Scene selector buttons ── */
+    .scene-selector {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 16px;
+    }
+    .scene-btn {
+      padding: 8px 22px; border-radius: 9999px;
+      border: 2px solid #ccc; background: #fff;
+      cursor: pointer; font-size: 0.9rem; font-weight: 500;
+      color: #555; font-family: inherit;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .scene-btn:hover { border-color: #1a1a1a; }
+    .scene-btn.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+
+    /* ── Teaser input image strip ── */
+    .teaser-input-images {
+      display: flex; gap: 10px; margin-bottom: 8px;
+      justify-content: center;
+    }
+    .teaser-input-images img {
+      flex: 1; min-width: 0; border-radius: 6px;
+      aspect-ratio: 4/3; object-fit: cover; display: block;
+    }
+    /* 4-image scene: pin each image to the same width it would get in a 5-image row */
+    .teaser-input-images[data-count="4"] img {
+      flex: 0 0 calc(20% - 8px);
+    }
+
+    /* ── BibTeX block ── */
+    .bibtex-block {
+      background: #f4f4f4; border: 1px solid #ddd; border-radius: 8px;
+      padding: 20px 24px; font-family: monospace; font-size: 0.85rem;
+      line-height: 1.6; color: #333; white-space: pre; overflow-x: auto;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center; padding: 24px 0;
+      font-size: 0.78rem; color: #888;
+      border-top: 1px solid #e8e8e8;
+    }
+    .site-footer a { color: #888; text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .video-pair, .align-pair, .viewer-pair { grid-template-columns: 1fr; }
+      .fixed-options { flex-wrap: wrap; }
+      .fixed-option { flex: 0 0 calc((100% - 20px) / 3); }
+      .teaser-input-images { flex-wrap: wrap; }
+      .teaser-input-images img { flex: 0 0 calc((100% - 20px) / 3); }
+      .teaser-input-images[data-count="4"] img { flex: 0 0 calc((100% - 20px) / 3); }
+      .align-videos { flex-wrap: wrap; }
+      .align-videos .viewer-item { flex: 0 0 calc((100% - 32px) / 3); }
+    }
+
+    /* ── Dev mode buttons ── */
+    .dev-panel { text-align: center; margin-top: 10px; }
+    .dev-save-btn {
+      padding: 6px 18px; border-radius: 9999px;
+      border: 2px solid #d97706; background: #fff;
+      color: #d97706; font-family: inherit; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .dev-save-btn:hover { background: #d97706; color: #fff; }
+    .dev-export-wrap {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+    }
+    .dev-export-btn {
+      padding: 8px 20px; border-radius: 9999px;
+      border: 2px solid #d97706; background: #fff;
+      color: #d97706; font-family: inherit; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transition: background 0.15s, color 0.15s;
+    }
+    .dev-export-btn:hover { background: #d97706; color: #fff; }
+    .dev-badge {
+      background: #d97706; color: #fff; font-size: 0.7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 9999px; letter-spacing: 0.05em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================================================================
+       Section 1: Title / Hero
+       =================================================================== -->
+  <header class="pub-hero">
+    <div class="container">
+      <h1 class="publication-title">
+        G3T Up! Gravity Aligned Coordinate Frames Simplify Pointmap Processing
+      </h1>
+      <div class="publication-authors">
+        <span class="author-block">
+          <a href="https://bharathrajn.com/" target="_blank">Bharath Raj Nagoor Kani</a><sup>1</sup>,
+        </span>
+        <span class="author-block">
+          <a href="https://www.cs.cornell.edu/~snavely/" target="_blank">Noah Snavely</a><sup>1</sup>
+        </span>
+      </div>
+      <div class="publication-authors" style="margin-bottom: 0;">
+        <span class="author-block"><sup>1</sup>Cornell University</span>
+      </div>
+      <div class="publication-links">
+        <a class="pub-btn" href="https://arxiv.org/abs/2605.27372" target="_blank">
+          <span class="icon"><i class="ai ai-arxiv"></i></span>
+          <span>arXiv</span>
+        </a>
+        <a class="pub-btn" href="https://github.com/g3t-paper/g3t" target="_blank">
+          <span class="icon"><i class="fab fa-github"></i></span>
+          <span>Code</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================
+       Section 2: Teaser
+       =================================================================== -->
+  <section class="section" id="teaser">
+    <div class="container">
+      <p class="section-text" style="text-align: center; font-size: 1.1rem;">
+        <strong>TL;DR:</strong> We introduce <strong>G3T</strong>, a transformer that predicts upright, gravity-aligned pointmaps regardless of input image orientation, and <strong>G3T-Long</strong>, a pipeline that leverages this uprightness to enable robust long-sequence 3D reconstruction.
+      </p>
+
+      <!-- Scene selector buttons -->
+      <div class="scene-selector" id="teaser-scene-btns">
+        <button class="scene-btn active" data-scene="0">Scene 1</button>
+        <button class="scene-btn" data-scene="1">Scene 2</button>
+        <button class="scene-btn" data-scene="2">Scene 3</button>
+      </div>
+
+      <!-- Visualization reading guide -->
+      <div class="viz-note">
+        <span class="viz-note-title"><i class="fa-solid fa-circle-info"></i> What is this visualization?</span>
+        <ul style="margin: 0; padding-left: 1.2em;">
+          <li><strong>📌 About:</strong> This visualization compares the uprightness of pointmaps predicted by G3T and VGGT on three self-captured scenes.</li>
+          <li><strong>🕹️ Interact:</strong> Drag to orbit, scroll to zoom. Use the <strong>⇌</strong> handle to move between RGB and height-based coloring.</li>
+          <li><strong>🔍 Focus on:</strong> Ground-parallel surfaces such as <b>floors, stairs, and benches</b>.</li>
+          <li><strong>📝 Observe:</strong> Ground-parallel surfaces on G3T pointmaps show <b>uniform color</b> <span class="patch-wrap">(<span class="color-patch color-patch-uniform"></span>)</span>, indicating that the pointmaps are upright, with horizontal surfaces sitting at a consistent height. The same surfaces on VGGT's pointmaps show <b>color gradients</b> <span class="patch-wrap">(<span class="color-patch color-patch-gradient"></span>)</span> instead, indicating the pointmap is not upright. Note also that G3T's ground-parallel surfaces align with the rendered grid lines.</li>
+          <li><strong>💡 Takeaway:</strong> G3T reliably predicts upright pointmaps regardless of input image orientation.</li>
+        </ul>
+      </div>
+
+      <!-- 3-D viewer pair -->
+      <div class="viewer-pair">
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="teaser-viewer-A">
+            <div class="viewer-loading" id="teaser-loading-A">Loading mesh…</div>
+            <div class="viewer-split-line" id="teaser-split-A">
+              <div class="viewer-split-handle">⇌</div>
+            </div>
+            <canvas class="inferno-legend" id="teaser-legend-A"></canvas>
+            <div class="viewer-split-overlay viewer-split-overlay-rgb">RGB</div>
+            <div class="viewer-split-overlay viewer-split-overlay-height">Height</div>
+          </div>
+          <span class="media-label">VGGT</span>
+        </div>
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="teaser-viewer-B">
+            <div class="viewer-loading" id="teaser-loading-B">Loading mesh…</div>
+            <div class="viewer-split-line" id="teaser-split-B">
+              <div class="viewer-split-handle">⇌</div>
+            </div>
+            <canvas class="inferno-legend" id="teaser-legend-B"></canvas>
+            <div class="viewer-split-overlay viewer-split-overlay-rgb">RGB</div>
+            <div class="viewer-split-overlay viewer-split-overlay-height">Height</div>
+          </div>
+          <span class="media-label">G3T</span>
+        </div>
+      </div>
+
+      <!-- 5 input images for current scene -->
+      <div class="teaser-input-images" id="teaser-input-images"></div>
+      <p class="carousel-label">Input Images</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 3: Method
+       =================================================================== -->
+  <!-- ===================================================================
+       Section 3a: Abstract
+       =================================================================== -->
+  <section class="section section--alt" id="abstract">
+    <div class="container">
+      <h2 class="section-heading">Abstract</h2>
+      <p class="section-text" style="margin-bottom: 15px;">
+        Modern feed-forward 3D reconstruction methods like VGGT predict pixel-aligned pointmaps in camera-centric coordinate frames. However, this choice of coordinate frame is not always optimal.
+      </p>
+      <p class="section-text" style="margin-bottom: 15px;">
+        We propose instead to predict pointmaps in upright, <b>gravity-aligned</b> frames that exploit strong structural cues present in many real-world scenes. 
+        Unlike camera-centric frames, gravity-aligned frames share a common vertical axis across viewpoints, reducing the rotational degrees of freedom needed to relate pointmaps to one another.  
+      </p>
+      <p class="section-text" style="margin-bottom: 15px;">
+        To this end, we introduce the Gravity Grounded Geometry Transformer (<b>G3T</b>), fine-tuned from existing models on gravity-aligned 3D data.
+        G3T produces highly accurate gravity-aware predictions, including upright pointmaps and camera-to-gravity poses. We further introduce <b>G3T-Long</b>, a submap-based
+        incremental 3D reconstruction pipeline that leverages the reduced rotational degrees of freedom afforded by upright frames to achieve significantly improved reconstruction accuracy.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 3b: Model Architecture
+       =================================================================== -->
+  <section class="section" id="method">
+    <div class="container">
+      <h2 class="section-heading">Model Architecture</h2>
+      <div class="method-figure">
+        <img src="assets/images/method.png" alt="Model Architecture Diagram" />
+      </div>
+      <p class="section-text" style="padding-top: 25px; margin-bottom: -25px;">
+        G3T builds upon VGGT with two key modifications. First, the point head outputs
+        pointmaps in the <em>gravity-aligned</em> frame of the first image
+        (<span class="math-inline">\(\mathcal{X}^{G_1} = \{X^{G_1}_i\}\)</span>).
+        Second, we replace VGGT's camera head with two new heads: the
+        <em>local camera head</em>, whose outputs capture gravity-to-camera rotation
+        and camera intrinsics parameters in
+        <span class="math-inline">\(\mathcal{G}^l = \{G^l_i\}\)</span>;
+        and the <em>relative camera head</em>, which capture 1-DoF relative yaw and
+        translation parameters in
+        <span class="math-inline">\(\mathcal{G}^r = \{G^r_i\}\)</span>.
+        The aggregator, depth head, and point head architectures are otherwise
+        unchanged from VGGT.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 4: Swapping Reference Image
+       =================================================================== -->
+  <section class="section section--alt" id="swap">
+    <div class="container">
+      <h2 class="section-heading">Swapping Reference Image</h2>
+      <p class="section-text">
+        G3T can produce upright pointmaps regardless of the orientation of the reference image, whereas VGGT's pointmaps inherit the roll and pitch of the camera that captured the reference image.
+      </p>
+
+      <!-- Visualization reading guide -->
+      <div class="viz-note">
+        <span class="viz-note-title"><i class="fa-solid fa-circle-info"></i> What is this visualization?</span>
+        <ul style="margin: 0; padding-left: 1.2em;">
+          <li><strong>📌 About:</strong> Shows how VGGT and G3T pointmaps respond when different input images are chosen as the reference.</li>
+          <li><strong>🕹️ Interact:</strong> Click on an input image to select it as the reference. Drag inside the viewer to orbit, scroll to zoom. Use the <strong>⇌</strong> handle to move between RGB and height-based coloring.</li>
+          <li><strong>🔍 Focus on:</strong> Ground-parallel surfaces such as <b>floors, stairs, and benches</b>.</li>
+          <li><strong>📝 Observe:</strong> VGGT reconstructions <strong>tilt</strong> with the reference image; G3T reconstructions stay <strong>upright</strong>.</li>
+          <li><strong>💡 Takeaway:</strong> G3T produces gravity-aligned pointmaps regardless of which image is chosen as the reference.</li>
+        </ul>
+      </div>
+
+      <!-- 3-D viewer pair -->
+      <div class="viewer-pair">
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="swap-viewer-A">
+            <div class="viewer-loading" id="swap-loading-A">Loading mesh…</div>
+            <div class="viewer-split-line" id="swap-split-A">
+              <div class="viewer-split-handle">⇌</div>
+            </div>
+            <canvas class="inferno-legend" id="swap-legend-A"></canvas>
+            <div class="viewer-split-overlay viewer-split-overlay-rgb">RGB</div>
+            <div class="viewer-split-overlay viewer-split-overlay-height">Height</div>
+          </div>
+          <span class="media-label">VGGT</span>
+        </div>
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="swap-viewer-B">
+            <div class="viewer-loading" id="swap-loading-B">Loading mesh…</div>
+            <div class="viewer-split-line" id="swap-split-B">
+              <div class="viewer-split-handle">⇌</div>
+            </div>
+            <canvas class="inferno-legend" id="swap-legend-B"></canvas>
+            <div class="viewer-split-overlay viewer-split-overlay-rgb">RGB</div>
+            <div class="viewer-split-overlay viewer-split-overlay-height">Height</div>
+          </div>
+          <span class="media-label">G3T</span>
+        </div>
+      </div>
+
+      <!-- Fixed 5 options (no left/right arrows) -->
+      <div class="fixed-options" id="swap-options"></div>
+      <p class="carousel-label">Input Images</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 5: Gravity-aligned Submap Alignment
+       =================================================================== -->
+  <section class="section" id="alignment">
+    <div class="container">
+      <h2 class="section-heading">Robust Long Sequence Reconstruction</h2>
+      <!-- <p class="section-text">
+        G3T-Long extends VGGT-Long by leveraging gravity-aligned frames by constraining submap alignment and loop closure optimization procedures to have 1-DoF yaw problem — enabling more robust long-sequence reconstructions.
+      </p> -->
+      <p class="section-text" style="margin-bottom: 15px;">
+        Pointmaps predicted by G3T can be related to each other using a pose <span class="math-inline">\(\pi^y(s, R_{y}, t)\)</span> that has 5-DoF (i.e., rotations are restricted to be rotations along the y-axis, which have 1-DoF).
+      </p>
+      <p class="section-text">
+        We leverage this property to create <b>G3T-Long</b>, a submap-based reconstruction pipeline that improves upon VGGT-Long and reconstructs long video sequences with significantly improved robustness.
+      </p>
+      
+      <div class="scene-selector" id="align-view-btns">
+        <button class="scene-btn active" data-view="demo">Demo</button>
+        <button class="scene-btn" data-view="figure">Figure</button>
+      </div>
+      <!-- Visualization reading guide -->
+      <div class="viz-note">
+        <span class="viz-note-title"><i class="fa-solid fa-circle-info"></i> What is this visualization?</span>
+        <ul style="margin: 0; padding-left: 1.2em;">
+          <li><strong>📌 About:</strong> This visualization compares two submap-based reconstruction methods, VGGT-Long and G3T-Long, on the same self-captured video with heavy camera roll and pitch variations.</li>
+          <li><strong>🕹️ Interact:</strong> Drag to orbit, scroll to zoom. Use <i class="fa-solid fa-pause" style="font-size:0.8em;"></i> to pause the chunk alignment animation. Click any video to play/pause all videos.</li>
+          <li><strong>🔍 Focus on:</strong> The initial orientation of each chunk and the rotation needed to align them. <em>Note: chunks are spaced out for visual clarity and thus translations are exaggerated.</em></li>
+          <li><strong>📝 Observe:</strong> For G3T-Long, both individual chunks and the final reconstruction remain gravity-aligned despite chaotic camera motion, requiring only a <strong>1-DoF yaw</strong> correction per chunk. VGGT-Long requires a full <strong>3-DoF rotation</strong> correction.</li>
+          <li><strong>💡 Takeaway:</strong> G3T stays upright even under severe roll and pitch, making long-sequence alignment simpler and more robust.</li>
+        </ul>
+      </div>
+
+      <div id="align-demo">
+      <div class="align-pair">
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="align-viewer-vggt">
+            <div class="viewer-loading" id="align-loading-vggt">Loading&hellip;</div>
+            <button class="align-pause-btn" aria-label="Pause animation"><i class="fa-solid fa-pause"></i></button>
+          </div>
+          <span class="media-label">VGGT-Long</span>
+        </div>
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="align-viewer-g3t">
+            <div class="viewer-loading" id="align-loading-g3t">Loading&hellip;</div>
+            <button class="align-pause-btn" aria-label="Pause animation"><i class="fa-solid fa-pause"></i></button>
+          </div>
+          <span class="media-label">G3T-Long</span>
+        </div>
+      </div>
+      <div class="align-videos">
+        <div class="viewer-item">
+          <video loop muted playsinline preload="metadata">
+            <source src="assets/videos/chunk_0.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="viewer-item">
+          <video loop muted playsinline preload="metadata">
+            <source src="assets/videos/chunk_1.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="viewer-item">
+          <video loop muted playsinline preload="metadata">
+            <source src="assets/videos/chunk_2.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="viewer-item">
+          <video loop muted playsinline preload="metadata">
+            <source src="assets/videos/chunk_3.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="viewer-item">
+          <video loop muted playsinline preload="metadata">
+            <source src="assets/videos/chunk_4.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+      <p class="carousel-label">Input Chunk Videos &nbsp;&middot;&nbsp; Click any video to play / pause all</p>
+      </div><!-- /#align-demo -->
+      <div id="align-figure" style="display:none;">
+        <div class="align-figure-row">
+          <figure style="margin:0;">
+            <img src="assets/images/alignment.png" alt="Gravity-aligned Submap Alignment Figure" style="max-height:400px;width:auto;display:block;" />
+            <figcaption class="carousel-label" style="margin-top:0.5rem;">Unlike VGGT pointmaps, which are related by a 7-DoF pose <span class="math-inline">\(\pi(s, R, t) \in \mathrm{Sim}(3)\)</span>, G3T pointmaps are related by a 5-DoF pose <span class="math-inline">\(\pi^y(s, R_{y}, t) \in \mathrm{Sim}_y(3)\)</span>, where rotations are constrained to the y-axis.</figcaption>
+          </figure>
+          <figure style="margin:0;">
+            <img src="assets/images/reconstruction_metrics.png" alt="Reconstruction Metrics" style="max-height:400px;width:auto;display:block;" />
+            <figcaption class="carousel-label" style="margin-top:0.5rem;">Median structure metrics averaged over 10 sequences from the TUM RGBD dataset</figcaption>
+          </figure>
+        </div>
+      </div><!-- /#align-figure -->
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 6: Upright Prediction Comparison
+       =================================================================== -->
+  <section class="section section--alt" id="upright">
+    <div class="container">
+      <h2 class="section-heading">Uprightness Comparison</h2>
+      <p class="section-text">
+        We compare G3T pointmaps against VGGT pointmaps made upright using GeoCalib (with multi-image optimization) as a baseline, alongside ground-truth gravity-aligned pointmaps.
+      </p>
+
+      <!-- Scene selector buttons -->
+      <div class="scene-selector" id="upright-scene-btns">
+        <button class="scene-btn active" data-scene="0">Scene 1</button>
+        <button class="scene-btn" data-scene="1">Scene 2</button>
+        <button class="scene-btn" data-scene="2">Scene 3</button>
+        <button class="scene-btn" data-scene="3">Scene 4</button>
+        <button class="scene-btn" data-scene="4">Scene 5</button>
+        <button class="scene-btn" data-scene="5">Scene 6</button>
+        <button class="scene-btn" data-scene="6">Scene 7</button>
+        <button class="scene-btn" data-scene="7">Scene 8</button>
+      </div>
+
+      <!-- Visualization reading guide -->
+      <div class="viz-note">
+        <span class="viz-note-title"><i class="fa-solid fa-circle-info"></i> What is this visualization?</span>
+        <ul style="margin: 0; padding-left: 1.2em;">
+          <li><strong>📌 About:</strong> This visualization compares three sets of upright pointmaps: <span class="kw-blue"><b>G3T</b></span>, <span class="kw-red"><b>VGGT+GeoCalib</b></span>, and <span class="kw-green"><b>Ground Truth</b></span>.</li>
+          <li><strong>🕹️ Interact:</strong> Drag to orbit, scroll to zoom.</li>
+          <li><strong>🔍 Focus on:</strong> How closely the blue (G3T) and red (VGGT+GeoCalib) pointmaps align with the green ground truth.</li>
+          <li><strong>📝 Observe:</strong> Scenes 1, 2, 3, 7 show <strong>severe</strong> VGGT+GeoCalib failures; the remaining scenes show <strong>modest</strong> failures.</li>
+          <li><strong>💡 Takeaway:</strong> G3T consistently produces upright pointmaps closer to ground truth than VGGT+GeoCalib, even in challenging scenes with large camera roll and pitch variations.</li>
+        </ul>
+      </div>
+
+      <!-- 3-D viewer pair -->
+      <div class="viewer-pair">
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="viewer-A">
+            <div class="viewer-loading" id="loading-A">Loading mesh…</div>
+          </div>
+          <span class="media-label">VGGT + GeoCalib</span>
+        </div>
+        <div class="viewer-item">
+          <div class="viewer-canvas" id="viewer-B">
+            <div class="viewer-loading" id="loading-B">Loading mesh…</div>
+          </div>
+          <span class="media-label">G3T</span>
+        </div>
+      </div>
+
+      <!-- 5 input images for current scene -->
+      <div class="teaser-input-images" id="upright-input-images"></div>
+      <p class="carousel-label">Input Images</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 7: Discussion
+       =================================================================== -->
+  <section class="section" id="future-work">
+    <div class="container">
+      <h2 class="section-heading">Discussion</h2>
+      <p class="section-text" style="margin-bottom: 15px;">
+        <strong>Limitations.</strong> G3T may not produce good upright-aware predictions in scenes with ambiguous structural cues.
+        For example, G3T can struggle to estimate upright pointmaps from close-up images of floors and walls if additional unambiguous context is not present.
+      </p>
+      <p class="section-text" style="margin-bottom: 15px;">
+        <strong>Future work.</strong> It would be interesting to explore if gravity-aligned prediction
+        <i>naturally encourages</i> performance improvement in tasks that favor uprightedness, such as <b>physically based simulation</b> or <b>spatial reasoning</b>.
+        Additionally, it could also be advantageous to explore coordinate frames with <i>even more structure</i>, such as Manhattan frames (when appropriate),
+        or even compositions of coordinate frames (e.g., a mixture of an overall scene coordinate frame, as well as local object coordinate frames for items in the scene).
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 8: Acknowledgements
+       =================================================================== -->
+  <section class="section section--alt" id="acknowledgements">
+    <div class="container">
+      <h2 class="section-heading">Acknowledgements</h2>
+      <p class="section-text" style="margin-bottom: 15px;">
+        We thank the authors of DUSt3R, VGGT, CUT3R, and VGGT-Long for open-sourcing their projects, which our work builds upon.
+        Additionally, we would like to thank Aditya Chetan, Haian Jin and Jay Karhade for their feedback on initial drafts of the paper.
+        This work was funded in part by the National Science Foundation (IIS-2211259 and IIS-2212084), and benefited from the
+        NVIDIA Academic Grant Program for compute resources.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Section 9: BibTeX
+       =================================================================== -->
+  <section class="section" id="bibtex">
+    <div class="container">
+      <h2 class="section-heading">BibTeX</h2>
+      <pre class="bibtex-block">@article{kani2026g3t,
+  author    = {Nagoor Kani, Bharath Raj and Snavely, Noah},
+  title     = {G3T Up! Gravity Aligned Coordinate Frames Simplify Pointmap Processing},
+  journal   = {arXiv preprint},
+  year      = {2026},
+}</pre>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       Three.js import map (modern ES-module approach, no bundler needed)
+       =================================================================== -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader }    from 'three/addons/loaders/GLTFLoader.js';
+
+    /* ------------------------------------------------------------------ */
+    /* Dev mode + pose configuration                                        */
+    /* ------------------------------------------------------------------ */
+
+    const DEV_MODE = false; // set to false before publishing
+
+    const CONFIG_JSON_PATH   = 'assets/viewer_config.json';
+    const CONFIG_STORAGE_KEY = 'viewer_pose_config';
+
+    let poseConfig = {};
+    let poseConfigReady   = false;
+    let teaserVisible     = true;   // above the fold on load
+    let swapVisible       = false;
+    let uprightVisible    = false;
+    let alignVisible      = false;
+    let swapInitLoaded    = false;
+    let uprightInitLoaded = false;
+    let alignInitialized  = false;
+
+    function capturePose(cam, ctrl) {
+      return {
+        px: cam.position.x, py: cam.position.y, pz: cam.position.z,
+        qx: cam.quaternion.x, qy: cam.quaternion.y, qz: cam.quaternion.z, qw: cam.quaternion.w,
+        tx: ctrl.target.x, ty: ctrl.target.y, tz: ctrl.target.z,
+        zoom: cam.zoom, near: cam.near, far: cam.far,
+      };
+    }
+
+    function applyPose(cam, ctrl, p) {
+      cam.position.set(p.px, p.py, p.pz);
+      cam.quaternion.set(p.qx, p.qy, p.qz, p.qw);
+      cam.zoom = p.zoom;
+      cam.near = p.near;
+      cam.far  = p.far;
+      cam.updateProjectionMatrix();
+      ctrl.target.set(p.tx, p.ty, p.tz);
+      ctrl.update();
+    }
+
+    function getPose(section, idx) {
+      return (poseConfig[section] && poseConfig[section][idx]) || null;
+    }
+
+    function setPose(section, idx, pose) {
+      if (!poseConfig[section]) poseConfig[section] = {};
+      poseConfig[section][idx] = pose;
+      localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(poseConfig));
+    }
+
+    function exportConfigJSON() {
+      const blob = new Blob([JSON.stringify(poseConfig, null, 2)], { type: 'application/json' });
+      const url  = URL.createObjectURL(blob);
+      const a    = Object.assign(document.createElement('a'), { href: url, download: 'viewer_config.json' });
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Tunable color-encoding constants (Section 6)                         */
+    /* ------------------------------------------------------------------ */
+
+    const COLOR_FREQ   = 20.0;  // matches `np.sin(minmax_y * np.pi * 20.0)`
+    const PHASE_SPEED  = 2.0;   // radians/sec of phase drift; 0 = static
+    const MAX_DPR      = 1.5;   // pixel ratio cap — reduces GPU load on retina displays
+    const TARGET_FPS   = 15;    // render loop target; rAF still fires at 60fps for input responsiveness
+
+    /* Fixed Y range shown on the colormap legend. Tick labels always span this
+       range regardless of the actual scene scale, so viewers look consistent.
+       Colors inside the strip are compressed/stretched to reflect the true scene yRange. */
+    const LEGEND_DISPLAY_MIN = -0.25;
+    const LEGEND_DISPLAY_MAX =  0.25;
+
+    /* Inferno colormap and split logic now live entirely on the GPU.
+       COLOR_FREQ and PHASE_SPEED are the only knobs you need to touch. */
+
+    /* ------------------------------------------------------------------ */
+    /* Asset paths                                                          */
+    /* ------------------------------------------------------------------ */
+
+    const teaserImageCounts = [5, 4, 6];
+    const teaserItems = teaserImageCounts.map((count, i) => ({
+      meshA:  `assets/meshes/teaser_${i + 1}_A.glb`,
+      meshB:  `assets/meshes/teaser_${i + 1}_B.glb`,
+      images: Array.from({ length: count }, (_, j) => `assets/thumbs/teaser_${i + 1}_${j + 1}.png`),
+    }));
+
+    const swapItems = Array.from({ length: 4 }, (_, i) => ({
+      meshA: `assets/meshes/swap_${i + 1}_A.glb`,
+      meshB: `assets/meshes/swap_${i + 1}_B.glb`,
+      thumb: `assets/thumbs/swap_${i + 1}.png`,
+    }));
+
+    const uprightItems = Array.from({ length: 8 }, (_, i) => ({
+      meshA:  `assets/meshes/upright_${i + 1}_A.glb`,
+      meshB:  `assets/meshes/upright_${i + 1}_B.glb`,
+      images: Array.from({ length: 5 }, (_, j) => `assets/thumbs/upright_${i + 1}_${j + 1}.png`),
+    }));
+
+    /* ── Section 5 alignment viewer asset paths ── */
+    const ALIGN_ANIM_DURATION = 3.0;   // seconds: scattered → aligned
+    const ALIGN_ANIM_PAUSE    = 1.0;   // seconds: hold at aligned before loop
+    const ALIGN_CYCLE         = ALIGN_ANIM_DURATION + ALIGN_ANIM_PAUSE;
+    const ALIGN_SPACING       = 5.0;   // scatter grid spacing in data units (tune per dataset)
+    const ALIGN_SCATTER_FACTOR     = 1.05;  // adaptive spacing multiplier: maxMeshDim * this
+    const ALIGN_AXIS_LENGTH_FRAC   = 0.35;  // axis group scale = maxMeshExtent * this
+    const ALIGN_AXIS_SHAFT_FRAC    = 0.02;  // shaft radius as fraction of axis length
+    const ALIGN_AXIS_HEAD_LEN_FRAC = 0.18;  // cone height as fraction of axis length
+    const ALIGN_AXIS_HEAD_RAD_FRAC = 0.05;  // cone base radius as fraction of axis length
+
+    // Slot order: ALIGN_SLOT_ORDER[glbIndex] = slotIndex.
+    // Slot positions are defined in computeAlignScatterOffsets5:
+    //   slot 0 = center, slot 1 = (-d,-d), slot 2 = (+d,-d), slot 3 = (+d,+d), slot 4 = (-d,+d)
+    // Edit this list to reorder which mesh lands in which grid position.
+    const ALIGN_SLOT_ORDER = [0, 4, 1, 3, 2];
+
+    const ALIGN_VGGT_POSES  = 'assets/alignment/vggt_poses.txt';
+    const ALIGN_VGGT_GLB_FN = i => `assets/alignment/vggt_${i}.glb`;
+    const ALIGN_G3T_POSES   = 'assets/alignment/g3t_poses.txt';
+    const ALIGN_G3T_GLB_FN  = i => `assets/alignment/g3t_${i}.glb`;
+
+    const _alignClock = new THREE.Clock();
+    let _alignPaused        = false;
+    let _alignElapsedAtPause = 0;
+    let _alignTotalPauseMs  = 0;
+    let _alignPauseStartMs  = 0;
+
+    /* ------------------------------------------------------------------ */
+    /* Helpers                                                              */
+    /* ------------------------------------------------------------------ */
+
+    function setVideo(el, src) {
+      el.src = src;
+      el.load();
+      el.play().catch(() => {/* autoplay policy – silently ignored */});
+    }
+
+    /* CPU-side inferno polynomial — mirrors the GLSL infernoGpu() in the shader. */
+    function infernoJs(t) {
+      const t2=t*t, t3=t2*t, t4=t2*t2, t5=t4*t, t6=t4*t2;
+      return [
+        Math.max(0, Math.min(1,  2.189e-4+0.1065*t+11.6024*t2-41.704*t3+77.1629*t4-71.3194*t5+25.1311*t6)),
+        Math.max(0, Math.min(1,  1.651e-3+0.5639*t- 3.9728*t2+17.4364*t3-33.4023*t4+32.6261*t5-12.2427*t6)),
+        Math.max(0, Math.min(1, -1.951e-2+3.9327*t-15.9424*t2+44.3541*t3-81.8073*t4+73.2095*t5-23.0703*t6)),
+      ];
+    }
+
+    /* Draw the inferno colormap legend for the current phase onto a canvas.
+       Tick labels always span [LEGEND_DISPLAY_MIN, LEGEND_DISPLAY_MAX].
+       Colors are stretched/compressed to reflect the actual scene yRange so that
+       the gradient matches what the shader draws on the mesh. */
+    function drawInfernoLegend(canvas, phase, yRange) {
+      const dpr = window.devicePixelRatio || 1;
+      const pw  = Math.round(canvas.clientWidth  * dpr);
+      const ph  = Math.round(canvas.clientHeight * dpr);
+      if (pw === 0 || ph === 0) return;
+      if (canvas.width !== pw || canvas.height !== ph) { canvas.width = pw; canvas.height = ph; }
+
+      const ctx      = canvas.getContext('2d');
+      const fontSize = Math.round(9 * dpr);
+      const gradW    = Math.max(1, Math.round(16 * dpr));
+      const gradX    = pw - gradW;              // gradient right-aligned
+      const topPad   = Math.round(14 * dpr);   // room for the "y" title
+      const gradH    = Math.max(1, ph - topPad);
+
+      ctx.clearRect(0, 0, pw, ph);
+
+      /* "y" axis title centered above the gradient strip. */
+      ctx.font         = `bold ${fontSize}px sans-serif`;
+      ctx.textBaseline = 'top';
+      ctx.textAlign    = 'center';
+      ctx.fillStyle    = 'rgba(30,30,30,0.9)';
+      ctx.fillText('y', gradX + gradW / 2, Math.round(2 * dpr));
+
+      /* Gradient strip — pixel position maps to a display-Y in [LEGEND_DISPLAY_MIN,
+         LEGEND_DISPLAY_MAX], then converted to normY via the actual scene yRange so
+         the colors match the shader exactly. Falls back to a linear normY when no
+         mesh has loaded yet. */
+      const dispRange = LEGEND_DISPLAY_MAX - LEGEND_DISPLAY_MIN;
+      const sceneRange = yRange ? (yRange.yMax - yRange.yMin) || 1 : 1;
+      const imgData = ctx.createImageData(gradW, gradH);
+      for (let py = 0; py < gradH; py++) {
+        const frac     = py / Math.max(gradH - 1, 1);
+        const displayY = LEGEND_DISPLAY_MIN + frac * dispRange;
+        const normY    = yRange ? (displayY - yRange.yMin) / sceneRange : frac;
+        const t = Math.abs(Math.sin(normY * Math.PI * COLOR_FREQ + phase));
+        const [lr, lg, lb] = infernoJs(t);
+        const r = Math.round(Math.pow(lr, 1/2.2) * 255);
+        const g = Math.round(Math.pow(lg, 1/2.2) * 255);
+        const b = Math.round(Math.pow(lb, 1/2.2) * 255);
+        for (let px = 0; px < gradW; px++) {
+          const idx = (py * gradW + px) * 4;
+          imgData.data[idx]   = r;
+          imgData.data[idx+1] = g;
+          imgData.data[idx+2] = b;
+          imgData.data[idx+3] = 255;
+        }
+      }
+      ctx.putImageData(imgData, gradX, topPad);
+
+      /* Tick marks and y-value labels — always span LEGEND_DISPLAY_MIN to MAX. */
+      const numTicks = 5;
+      const tickLen  = Math.round(3 * dpr);
+      const labelX   = gradX - tickLen - Math.round(2 * dpr);
+      ctx.font         = `${fontSize}px monospace`;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign    = 'right';
+
+      for (let i = 0; i <= numTicks; i++) {
+        const frac = i / numTicks;
+        const py   = topPad + Math.round(frac * (gradH - 1));
+        const yVal = LEGEND_DISPLAY_MIN + frac * dispRange;
+        ctx.fillStyle = 'rgba(40,40,40,0.75)';
+        ctx.fillRect(gradX - tickLen, py, tickLen, Math.max(1, Math.round(dpr)));
+        ctx.fillStyle = 'rgba(30,30,30,0.9)';
+        const textY = Math.max(topPad + fontSize / 2, Math.min(ph - fontSize / 2, py));
+        ctx.fillText(yVal.toFixed(2), labelX, textY);
+      }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Section 5 – Alignment viewer helpers                                 */
+    /* ------------------------------------------------------------------ */
+
+    function parsePoses(text) {
+      return text.trim().split('\n').filter(l => l.trim()).map(line => {
+        const v = line.trim().split(/\s+/).map(Number);
+        /* Pose file format: 13 values per row.
+           vals[0..11] = 3×4 [R|t] matrix, row-major:
+             row 0 → v[0] v[1] v[2]  t_x=v[3]
+             row 1 → v[4] v[5] v[6]  t_y=v[7]
+             row 2 → v[8] v[9] v[10] t_z=v[11]
+           vals[12] = scale */
+        const rotMat = new THREE.Matrix4().set(
+          v[0],  v[1],  v[2],  0,
+          v[4],  v[5],  v[6],  0,
+          v[8],  v[9],  v[10], 0,
+          0,     0,     0,     1
+        );
+        return {
+          q: new THREE.Quaternion().setFromRotationMatrix(rotMat),
+          t: new THREE.Vector3(v[3], v[7], v[11]),
+          s: v[12],
+        };
+      });
+    }
+
+    /* 5-slot layout: index 0 at center, indices 1-4 at square corners */
+    function computeAlignScatterOffsets5(spacing) {
+      const d = spacing;
+      return [
+        new THREE.Vector3(  0, 0,   0),
+        new THREE.Vector3( -d, 0,  -d),
+        new THREE.Vector3(  d, 0,  -d),
+        new THREE.Vector3(  d, 0,   d),
+        new THREE.Vector3( -d, 0,   d),
+      ];
+    }
+
+    /* Statistical median of vertex world-positions (in obj-local space, obj at origin) */
+    function computeVertexMedian(obj) {
+      const xs = [], ys = [], zs = [];
+      const tmp = new THREE.Vector3();
+      obj.updateWorldMatrix(true, true);
+      obj.traverse(child => {
+        if (!child.isMesh || !child.geometry) return;
+        const pos = child.geometry.attributes.position;
+        if (!pos) return;
+        for (let j = 0; j < pos.count; j++) {
+          tmp.fromBufferAttribute(pos, j).applyMatrix4(child.matrixWorld);
+          xs.push(tmp.x); ys.push(tmp.y); zs.push(tmp.z);
+        }
+      });
+      if (xs.length === 0) return new THREE.Vector3();
+      const med = arr => { arr.sort((a, b) => a - b); return arr[Math.floor(arr.length / 2)]; };
+      return new THREE.Vector3(med(xs), med(ys), med(zs));
+    }
+
+    /* Single arrow: cylinder shaft + cone tip, pointing along dir, length = 1 (scaled externally) */
+    function createAxisArrow(dir, color, shaftFrac, headLenFrac, headRadFrac) {
+      const shaftLen = 1.0 - headLenFrac;
+      const mat = new THREE.MeshBasicMaterial({ color });
+      const shaft = new THREE.Mesh(
+        new THREE.CylinderGeometry(shaftFrac, shaftFrac, shaftLen, 8, 1),
+        mat
+      );
+      shaft.position.y = shaftLen / 2;
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(headRadFrac, headLenFrac, 8),
+        mat
+      );
+      cone.position.y = shaftLen + headLenFrac / 2;
+      const arrow = new THREE.Group();
+      arrow.add(shaft, cone);
+      arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+      return arrow;
+    }
+
+    /* RGB XYZ axis triad, length = 1 (caller scales to desired size) */
+    function createAxesGroup(shaftFrac, headLenFrac, headRadFrac) {
+      const g = new THREE.Group();
+      g.add(createAxisArrow(new THREE.Vector3(1, 0, 0), 0xff2020, shaftFrac, headLenFrac, headRadFrac));
+      g.add(createAxisArrow(new THREE.Vector3(0, 1, 0), 0x20c020, shaftFrac, headLenFrac, headRadFrac));
+      g.add(createAxisArrow(new THREE.Vector3(0, 0, 1), 0x2040ff, shaftFrac, headLenFrac, headRadFrac));
+      return g;
+    }
+
+    function createAlignViewer({ containerId, loadingId, posesUrl, glbUrlFn, onReady }) {
+      const ctn = document.getElementById(containerId);
+      const ldg = document.getElementById(loadingId);
+      if (!ctn) return { update: () => {} };
+
+      const aRend = new THREE.WebGLRenderer({ antialias: true });
+      aRend.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+      aRend.outputColorSpace = THREE.SRGBColorSpace;
+      ctn.appendChild(aRend.domElement);
+
+      const aScene = new THREE.Scene();
+      aScene.background = new THREE.Color(0xf8f8f8);
+
+      const aCam = new THREE.PerspectiveCamera(45, 1, 0.001, 10000);
+      aCam.up.set(0, -1, 0);
+
+      const aCtrl = new OrbitControls(aCam, aRend.domElement);
+      aCtrl.enableDamping = true;
+      aCtrl.dampingFactor = 0.07;
+
+      aScene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const aDirL = new THREE.DirectionalLight(0xffffff, 1.6);
+      aDirL.position.set(5, -8, 6);
+      aScene.add(aDirL);
+
+      new ResizeObserver(() => fitRenderer(aRend, ctn, aCam)).observe(ctn);
+      fitRenderer(aRend, ctn, aCam);
+
+      const aPivots  = [];
+      const aPoses   = []; // {qR, tAdj, s, offset, bboxSize}
+      const aAxes    = []; // AxesHelper per submap, scaled uniformly in onAllLoaded
+      const _qId     = new THREE.Quaternion(); // identity, reused
+
+      fetch(posesUrl)
+        .then(r => r.text())
+        .then(text => {
+          const rawPoses = parsePoses(text);
+          const N = rawPoses.length;
+          if (N === 0) { if (ldg) ldg.style.display = 'none'; return; }
+
+          const scatter = computeAlignScatterOffsets5(ALIGN_SPACING);
+          let loadedCount = 0;
+
+          function onAllLoaded() {
+            if (ldg) ldg.style.display = 'none';
+
+            // Derive spacing and uniform axis length from stored per-mesh bbox sizes
+            let maxDim = 0, maxMeshExtent = 0;
+            aPoses.forEach(pose => {
+              if (!pose || !pose.bboxSize) return;
+              const { x, y, z } = pose.bboxSize;
+              maxDim = Math.max(maxDim, x, z);
+              maxMeshExtent = Math.max(maxMeshExtent, x, y, z);
+            });
+            if (maxDim === 0) maxDim = 1;
+            if (maxMeshExtent === 0) maxMeshExtent = 1;
+
+            const adaptiveSpacing = maxDim * ALIGN_SCATTER_FACTOR;
+            const newScatter = computeAlignScatterOffsets5(adaptiveSpacing);
+            aPivots.forEach((p, i) => {
+              if (!p || !aPoses[i]) return;
+              p.position.copy(newScatter[ALIGN_SLOT_ORDER[i]]);
+              aPoses[i].offset = newScatter[ALIGN_SLOT_ORDER[i]].clone();
+            });
+
+            // Scale all axes to a uniform length proportional to the largest mesh
+            const axisLength = maxMeshExtent * ALIGN_AXIS_LENGTH_FRAC;
+            aAxes.forEach(ax => { if (ax) ax.scale.setScalar(axisLength); });
+
+            // Re-center aligned positions so mesh 0 stays at scene origin throughout
+            if (aPoses[0] && aPoses[0].tAdj) {
+              const alignOrigin = aPoses[0].tAdj.clone();
+              aPoses.forEach(pose => { if (pose && pose.tAdj) pose.tAdj.sub(alignOrigin); });
+            }
+
+            // Fit camera to the scattered bounding box
+            const bbox = new THREE.Box3();
+            aPivots.forEach(p => { if (p) bbox.expandByObject(p); });
+            if (!bbox.isEmpty()) {
+              const bCtr  = bbox.getCenter(new THREE.Vector3());
+              const bSize = bbox.getSize(new THREE.Vector3());
+              const sphereR = bSize.length() / 2;
+              const vFov  = aCam.fov * Math.PI / 180;
+              const dist  = (sphereR / Math.tan(vFov / 2)) * 1.5;
+              aCam.position.set(bCtr.x, bCtr.y - dist * 0.35, bCtr.z + dist);
+              aCam.near = dist * 0.001;
+              aCam.far  = dist * 200;
+              aCam.updateProjectionMatrix();
+              aCtrl.target.copy(bCtr);
+              aCtrl.update();
+
+              // Ground grid spanning the scattered layout
+              const gridSpan = Math.max(bSize.x, bSize.z) * 2.6;
+              const gridDivs = Math.max(10, Math.round(gridSpan / adaptiveSpacing) * 4);
+              const grid = new THREE.GridHelper(gridSpan, gridDivs, 0x888888, 0xcccccc);
+              grid.position.set(bCtr.x, bbox.max.y + 0.05, bCtr.z);
+              aScene.add(grid);
+            }
+            if (typeof onReady === 'function') onReady({ cam: aCam, ctrl: aCtrl });
+          }
+
+          rawPoses.forEach(({ q: qR, t, s }, i) => {
+            gltfLoader.load(
+              glbUrlFn(i),
+              gltf => {
+                const obj = gltf.scene;
+
+                // Bbox and median computed while obj is still at origin
+                const bbox  = new THREE.Box3().setFromObject(obj);
+                const ctr   = bbox.getCenter(new THREE.Vector3());
+                const bSize = bbox.getSize(new THREE.Vector3());
+                const medianWorld = computeVertexMedian(obj);
+                const medianLocal = medianWorld.sub(ctr); // pivot-local after centering
+
+                // Center each submap at the pivot's origin so rotation is in-place
+                obj.position.sub(ctr);
+
+                // Corrected translation: t_adj = t + s * R * ctr
+                const tAdj = t.clone().add(
+                  ctr.clone().applyQuaternion(qR).multiplyScalar(s)
+                );
+
+                const pivot = new THREE.Group();
+                pivot.add(obj);
+                aScene.add(pivot);
+                pivot.position.copy(scatter[ALIGN_SLOT_ORDER[i]]);
+
+                // RGB XYZ axes at vertex-median center, aligned to pre-alignment orientation
+                const axesHelper = createAxesGroup(
+                  ALIGN_AXIS_SHAFT_FRAC, ALIGN_AXIS_HEAD_LEN_FRAC, ALIGN_AXIS_HEAD_RAD_FRAC
+                );
+                axesHelper.position.copy(medianLocal);
+                pivot.add(axesHelper);
+                aAxes[i] = axesHelper;
+
+                aPivots[i] = pivot;
+                aPoses[i]  = { qR, tAdj, s, offset: scatter[i].clone(), bboxSize: bSize };
+
+                if (++loadedCount === N) onAllLoaded();
+              },
+              undefined,
+              () => { if (++loadedCount === N) onAllLoaded(); }
+            );
+          });
+        })
+        .catch(() => { if (ldg) ldg.style.display = 'none'; });
+
+      function update(T) {
+        aCtrl.update();
+        aPivots.forEach((pivot, i) => {
+          if (!pivot || !aPoses[i]) return;
+          const { qR, tAdj, s, offset } = aPoses[i];
+          if (T <= 0.5) {
+            const alpha = T / 0.5;
+            pivot.quaternion.slerpQuaternions(_qId, qR, alpha);
+            pivot.position.copy(offset);
+            pivot.scale.setScalar(1);
+          } else {
+            const beta = (T - 0.5) / 0.5;
+            pivot.quaternion.copy(qR);
+            pivot.scale.setScalar(1 + (s - 1) * beta);
+            pivot.position.lerpVectors(offset, tAdj, beta);
+          }
+        });
+        aRend.render(aScene, aCam);
+      }
+
+      return { update, ctrl: aCtrl, cam: aCam };
+    }
+
+    /* Alignment viewers created lazily when #alignment enters viewport */
+    let alignVggt = { update: () => {}, ctrl: null, cam: null };
+    let alignG3t  = { update: () => {}, ctrl: null, cam: null };
+
+    /* Sync orbit controls between alignment viewers (null-safe until viewers are initialised) */
+    let alignSyncing = false;
+    let alignSyncEnabled = true;
+    function alignSyncVggtToG3t() {
+      if (!alignSyncEnabled || alignSyncing || !alignVggt.cam || !alignG3t.cam) return;
+      alignSyncing = true;
+      alignG3t.cam.position.copy(alignVggt.cam.position);
+      alignG3t.cam.quaternion.copy(alignVggt.cam.quaternion);
+      alignG3t.cam.zoom = alignVggt.cam.zoom; alignG3t.cam.updateProjectionMatrix();
+      alignG3t.ctrl.target.copy(alignVggt.ctrl.target); alignG3t.ctrl.update();
+      alignSyncing = false;
+    }
+    function alignSyncG3tToVggt() {
+      if (!alignSyncEnabled || alignSyncing || !alignG3t.cam || !alignVggt.cam) return;
+      alignSyncing = true;
+      alignVggt.cam.position.copy(alignG3t.cam.position);
+      alignVggt.cam.quaternion.copy(alignG3t.cam.quaternion);
+      alignVggt.cam.zoom = alignG3t.cam.zoom; alignVggt.cam.updateProjectionMatrix();
+      alignVggt.ctrl.target.copy(alignG3t.ctrl.target); alignVggt.ctrl.update();
+      alignSyncing = false;
+    }
+
+    /* Demo / Figure toggle for alignment section */
+    (function () {
+      const alignViewBtns = document.querySelectorAll('#align-view-btns .scene-btn');
+      const alignDemo     = document.getElementById('align-demo');
+      const alignFigure   = document.getElementById('align-figure');
+      const alignVizNote  = document.querySelector('#alignment .viz-note');
+      alignViewBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          alignViewBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const view = btn.dataset.view;
+          alignDemo.style.display        = view === 'demo'   ? '' : 'none';
+          alignFigure.style.display      = view === 'figure' ? '' : 'none';
+          alignVizNote.style.display     = view === 'demo'   ? '' : 'none';
+        });
+      });
+    })();
+
+    /* Click-to-toggle-all for alignment input chunk videos */
+    (function () {
+      const alignVids = Array.from(document.querySelectorAll('.align-videos video'));
+      let alignPlaying = false;
+      alignVids.forEach(v => {
+        v.addEventListener('click', () => {
+          alignPlaying = !alignPlaying;
+          alignVids.forEach(v2 => { alignPlaying ? v2.play() : v2.pause(); });
+        });
+      });
+    })();
+
+    /* ------------------------------------------------------------------ */
+    /* Section 2 – Teaser scene buttons + 5-image strip                    */
+    /* ------------------------------------------------------------------ */
+
+    let teaserCurrentScene  = 0;
+    let uprightCurrentScene = 0;
+
+    const teaserSceneBtns    = document.querySelectorAll('#teaser-scene-btns .scene-btn');
+    const teaserImageStrip   = document.getElementById('teaser-input-images');
+
+    function renderTeaserImages(sceneIdx) {
+      teaserImageStrip.innerHTML = '';
+      teaserItems[sceneIdx].images.forEach((src, j) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `Scene ${sceneIdx + 1} input ${j + 1}`;
+        teaserImageStrip.appendChild(img);
+      });
+      teaserImageStrip.dataset.count = teaserItems[sceneIdx].images.length;
+    }
+
+    teaserSceneBtns.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        teaserSceneBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        teaserCurrentScene = i;
+        tFitDone = false;
+        teaserPairState = {};
+        renderTeaserImages(i);
+        loadMeshTeaser(tsA, teaserItems[i].meshA, tldgA, 'A', teaserPairState);
+        loadMeshTeaser(tsB, teaserItems[i].meshB, tldgB, 'B', teaserPairState);
+      });
+    });
+    renderTeaserImages(0);
+
+
+    /* ------------------------------------------------------------------ */
+    /* Section 6 – Synchronised Three.js viewers                           */
+    /* ------------------------------------------------------------------ */
+
+    const ctnA = document.getElementById('viewer-A');
+    const ctnB = document.getElementById('viewer-B');
+    const ldgA = document.getElementById('loading-A');
+    const ldgB = document.getElementById('loading-B');
+
+    /* Renderers */
+    const rA = new THREE.WebGLRenderer({ antialias: true });
+    const rB = new THREE.WebGLRenderer({ antialias: true });
+    rA.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    rB.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    rA.outputColorSpace = THREE.SRGBColorSpace;
+    rB.outputColorSpace = THREE.SRGBColorSpace;
+    ctnA.appendChild(rA.domElement);
+    ctnB.appendChild(rB.domElement);
+
+    /* Scenes */
+    const sA = new THREE.Scene(); sA.background = new THREE.Color(0xffffff);
+    const sB = new THREE.Scene(); sB.background = new THREE.Color(0xffffff);
+
+    /* Cameras */
+    const camA = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    const camB = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    camA.up.set(0, -1, 0);
+    camB.up.set(0, -1, 0);
+    camA.position.set(0, 0, -2.5);
+    camB.position.set(0, 0, -2.5);
+
+    /* Controls */
+    const ctrlA = new OrbitControls(camA, rA.domElement);
+    const ctrlB = new OrbitControls(camB, rB.domElement);
+    ctrlA.enableDamping = ctrlB.enableDamping = true;
+    ctrlA.dampingFactor = ctrlB.dampingFactor = 0.07;
+
+    /* Camera sync: dragging either viewer moves both */
+    let syncing = false;
+    let uprightSyncEnabled = true;
+    function syncAtoB() {
+      if (!uprightSyncEnabled || syncing) return; syncing = true;
+      camB.position.copy(camA.position);
+      camB.quaternion.copy(camA.quaternion);
+      camB.zoom = camA.zoom; camB.updateProjectionMatrix();
+      ctrlB.target.copy(ctrlA.target); ctrlB.update();
+      syncing = false;
+    }
+    function syncBtoA() {
+      if (!uprightSyncEnabled || syncing) return; syncing = true;
+      camA.position.copy(camB.position);
+      camA.quaternion.copy(camB.quaternion);
+      camA.zoom = camB.zoom; camA.updateProjectionMatrix();
+      ctrlA.target.copy(ctrlB.target); ctrlA.update();
+      syncing = false;
+    }
+    ctrlA.addEventListener('change', () => { _uprightNeedsRender = true; syncAtoB(); });
+    ctrlB.addEventListener('change', () => { _uprightNeedsRender = true; syncBtoA(); });
+
+    /* Resize – keep canvases sized to their CSS containers */
+    function fitRenderer(r, ctn, cam) {
+      const w = Math.max(ctn.clientWidth, 1);
+      const h = Math.max(ctn.clientHeight, 1);
+      r.setSize(w, h, false);
+      cam.aspect = w / h;
+      cam.updateProjectionMatrix();
+    }
+    const ro = new ResizeObserver(() => {
+      fitRenderer(rA, ctnA, camA);
+      fitRenderer(rB, ctnB, camB);
+    });
+    ro.observe(ctnA); ro.observe(ctnB);
+    fitRenderer(rA, ctnA, camA);
+    fitRenderer(rB, ctnB, camB);
+
+    /* Lighting */
+    function addLights(scene) {
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const d = new THREE.DirectionalLight(0xffffff, 1.6);
+      d.position.set(5, 8, 6);
+      scene.add(d);
+    }
+    addLights(sA); addLights(sB);
+
+    /* Mesh loading with fallback placeholder box */
+    const gltfLoader = new GLTFLoader();
+    let fitDone = false;
+
+    function computeMedianStats(obj) {
+      const xs = [], ys = [], zs = [];
+      const tmp = new THREE.Vector3();
+      obj.updateWorldMatrix(true, true);
+      obj.traverse(child => {
+        if (!child.isMesh || !child.geometry) return;
+        const pos = child.geometry.attributes.position;
+        if (!pos) return;
+        for (let i = 0; i < pos.count; i++) {
+          tmp.fromBufferAttribute(pos, i).applyMatrix4(child.matrixWorld);
+          xs.push(tmp.x); ys.push(tmp.y); zs.push(tmp.z);
+        }
+      });
+      if (xs.length === 0) return { center: new THREE.Vector3(), medDist: 1 };
+      const med = arr => { arr.sort((a, b) => a - b); return arr[Math.floor(arr.length / 2)]; };
+      const cx = med(xs.slice()), cy = med(ys.slice()), cz = med(zs.slice());
+      const dists = [];
+      for (let i = 0; i < xs.length; i++) {
+        const dx = xs[i] - cx, dy = ys[i] - cy, dz = zs[i] - cz;
+        dists.push(Math.sqrt(dx * dx + dy * dy + dz * dz));
+      }
+      return { center: new THREE.Vector3(cx, cy, cz), medDist: med(dists) || 1 };
+    }
+
+    function clearScene(scene) {
+      while (scene.children.length) scene.remove(scene.children[0]);
+      addLights(scene);
+    }
+
+    function addGrid(scene, gridY, gridCenterX, gridCenterZ, gridSpan) {
+      const span = Math.max(1, gridSpan);
+      const divs = Math.min(100, Math.max(10, Math.round(span * 4)));
+      const grid = new THREE.GridHelper(span, divs, 0x888888, 0xcccccc);
+      grid.name = 'groundGrid';
+      grid.position.set(gridCenterX, gridY, gridCenterZ);
+      scene.add(grid);
+    }
+
+    function addPlaceholder(scene) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshStandardMaterial({ color: 0x4b7be5, roughness: 0.45, metalness: 0.1 })
+      );
+      scene.add(mesh);
+    }
+
+    /* Returns true for any renderable object that carries a geometry + material. */
+    function isRenderable(o) {
+      return !!(o.geometry && o.material && o.geometry.attributes.position);
+    }
+
+    /* Build a shader-patched material (via onBeforeCompile) that handles the
+       left/right split entirely on the GPU.
+       - Left  (x < splitX uniform): outputs original vertex colors unchanged.
+       - Right (x >= splitX uniform): computes inferno(|sin(normY·π·freq + phase)|).
+       normY is uploaded once as a vertex attribute; only two float uniforms are
+       updated each frame — no CPU color loop, no buffer re-upload. */
+    function makeSplitMaterial(o) {
+      const src = o.material;
+      let mat;
+      if (o.isPoints) {
+        mat = new THREE.PointsMaterial({
+          vertexColors: true,
+          size: src.size !== undefined ? src.size : 1,
+          sizeAttenuation: src.sizeAttenuation !== undefined ? src.sizeAttenuation : true,
+        });
+      } else if (o.isLine) {
+        mat = new THREE.LineBasicMaterial({ vertexColors: true });
+      } else {
+        mat = src.clone();
+        mat.vertexColors = true;
+      }
+
+      /* Shared uniform objects — update .value each frame, no material rebuild. */
+      const uniforms = { phase: { value: 0.0 }, splitX: { value: 0.0 } };
+      mat.userData.splitUniforms = uniforms;
+
+      const freq = COLOR_FREQ.toFixed(1);
+
+      mat.onBeforeCompile = shader => {
+        shader.uniforms.phase  = uniforms.phase;
+        shader.uniforms.splitX = uniforms.splitX;
+
+        /* Vertex shader: declare normY attribute + varying, assign in main. */
+        shader.vertexShader = [
+          'attribute float normY;',
+          'varying   float vNormY;',
+          shader.vertexShader,
+        ].join('\n').replace(
+          '#include <begin_vertex>',
+          '#include <begin_vertex>\n  vNormY = normY;'
+        );
+
+        /* Fragment shader: prepend uniforms + inferno function, then append
+           the split override after the last closing brace of main(). */
+        shader.fragmentShader = [
+          'uniform float phase;',
+          'uniform float splitX;',
+          'varying float vNormY;',
+          'vec3 infernoGpu(float t){',
+          '  float t2=t*t,t3=t2*t,t4=t2*t2,t5=t4*t,t6=t4*t2;',
+          '  return clamp(vec3(',
+          '     2.189e-4+0.1065*t+11.6024*t2-41.704*t3+77.1629*t4-71.3194*t5+25.1311*t6,',
+          '     1.651e-3+0.5639*t- 3.9728*t2+17.4364*t3-33.4023*t4+32.6261*t5-12.2427*t6,',
+          '    -1.951e-2+3.9327*t-15.9424*t2+44.3541*t3-81.8073*t4+73.2095*t5-23.0703*t6',
+          '  ),0.0,1.0);',
+          '}',
+          shader.fragmentShader,
+        ].join('\n').replace(
+          /}(\s*)$/,
+          `  if (gl_FragCoord.x >= splitX) {
+    float t = abs(sin(vNormY * 3.14159265359 * ${freq} + phase));
+    vec3 col = infernoGpu(t);
+    // sRGB→linear then through Three.js output-colorspace pipeline (matches vertex color path)
+    gl_FragColor = linearToOutputTexel(vec4(pow(col, vec3(2.2)), 1.0));
+  }
+}`
+        );
+      };
+
+      return mat;
+    }
+
+    /* Upload normY as a vertex attribute and apply the split material.
+       yOverride = { yMin, yMax } — if provided, skips the Y-range scan and uses
+       those values instead (so two meshes can share the same color mapping).
+       Returns { yMin, yMax } so callers can propagate the range to a paired mesh. */
+    function setupColorVariant(rootObj, yOverride) {
+      rootObj.updateWorldMatrix(true, true);
+      const objects = [];
+      let yMin = Infinity, yMax = -Infinity;
+      const tmp = new THREE.Vector3();
+      rootObj.traverse(m => {
+        if (!isRenderable(m)) return;
+        objects.push(m);
+        if (!yOverride) {
+          const pos = m.geometry.attributes.position;
+          for (let i = 0; i < pos.count; i++) {
+            const wy = tmp.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld).y;
+            if (wy < yMin) yMin = wy;
+            if (wy > yMax) yMax = wy;
+          }
+        }
+      });
+      if (yOverride) { yMin = yOverride.yMin; yMax = yOverride.yMax; }
+      const range = (yMax - yMin) || 1;
+      objects.forEach(m => {
+        const pos = m.geometry.attributes.position;
+        const N   = pos.count;
+        const normY = new Float32Array(N);
+        for (let i = 0; i < N; i++) {
+          const wy = tmp.fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld).y;
+          normY[i] = (wy - yMin) / range;
+        }
+        m.geometry.setAttribute('normY', new THREE.BufferAttribute(normY, 1));
+        const mat = makeSplitMaterial(m);
+        m.userData.splitUniforms = mat.userData.splitUniforms;
+        m.material = mat;
+      });
+      return { yMin, yMax };
+    }
+
+    /* Push phase + splitX (in framebuffer pixels) to every split material. */
+    function updateSplitUniforms(scene, phase, splitXpx) {
+      scene.traverse(o => {
+        const u = o.userData.splitUniforms;
+        if (!u) return;
+        u.phase.value  = phase;
+        u.splitX.value = splitXpx;
+      });
+    }
+
+    let uprightPairState = {};
+
+    function loadMesh(scene, path, ldgEl, key, pairState) {
+      ldgEl.style.display = 'flex';
+      const id = (scene.userData.loadId = (scene.userData.loadId || 0) + 1);
+
+      gltfLoader.load(
+        path,
+        gltf => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          const obj  = gltf.scene;
+          const box  = new THREE.Box3().setFromObject(obj);
+          const { center: ctr, medDist } = computeMedianStats(obj);
+          const size  = box.getSize(new THREE.Vector3());
+          const scale = 1 / medDist;
+          obj.position.sub(ctr);
+          obj.scale.setScalar(scale);
+          scene.add(obj);
+          const preCenter  = box.getCenter(new THREE.Vector3());
+          const gridCenterX = scale * preCenter.x - ctr.x;
+          const gridCenterZ = scale * preCenter.z - ctr.z;
+          const gridY       = scale * box.max.y - ctr.y + 0.05;
+          const gridSpan    = Math.max(size.x, size.z) * scale * 2.5;
+          pairState[key] = { scene, gridY, gridCenterX, gridCenterZ, gridSpan };
+          const otherKey = key === 'A' ? 'B' : 'A';
+          if (pairState[otherKey]) {
+            const maxSpan = Math.max(gridSpan, pairState[otherKey].gridSpan);
+            [key, otherKey].forEach(k => {
+              const p = pairState[k];
+              const oldGrid = p.scene.getObjectByName('groundGrid');
+              if (oldGrid) p.scene.remove(oldGrid);
+              addGrid(p.scene, p.gridY, p.gridCenterX, p.gridCenterZ, maxSpan);
+            });
+          } else {
+            addGrid(scene, gridY, gridCenterX, gridCenterZ, gridSpan);
+          }
+          if (!fitDone) {
+            fitDone = true;
+            const normX   = size.x * scale;
+            const normY   = size.y * scale;
+            const normZ   = size.z * scale;
+            const sphereR = Math.sqrt(normX*normX + normY*normY + normZ*normZ) / 2;
+            const vFov    = camA.fov * Math.PI / 180;
+            const dist    = sphereR / Math.tan(vFov / 2) * 1.1;
+            [camA, camB].forEach(c => {
+              c.position.set(0, 0, -dist);
+              c.near = dist * 0.01;
+              c.far  = dist * 100;
+              c.updateProjectionMatrix();
+            });
+            [ctrlA, ctrlB].forEach(c => { c.target.set(0, 0, 0); c.update(); });
+            const _up = getPose('upright', uprightCurrentScene);
+            if (_up) { syncing = true; if (_up.A) applyPose(camA, ctrlA, _up.A); if (_up.B) applyPose(camB, ctrlB, _up.B); syncing = false; }
+          }
+          _uprightNeedsRender = true;
+          ldgEl.style.display = 'none';
+        },
+        undefined,
+        () => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          addPlaceholder(scene);
+          _uprightNeedsRender = true;
+          ldgEl.style.display = 'none';
+        }
+      );
+    }
+
+
+    /* ------------------------------------------------------------------ */
+    /* Section 2 – Teaser Three.js viewers                                  */
+    /* ------------------------------------------------------------------ */
+
+    const tctnA    = document.getElementById('teaser-viewer-A');
+    const tctnB    = document.getElementById('teaser-viewer-B');
+    const tldgA    = document.getElementById('teaser-loading-A');
+    const tldgB    = document.getElementById('teaser-loading-B');
+    const tLegendA = document.getElementById('teaser-legend-A');
+    const tLegendB = document.getElementById('teaser-legend-B');
+
+    const trA = new THREE.WebGLRenderer({ antialias: true });
+    const trB = new THREE.WebGLRenderer({ antialias: true });
+    trA.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    trB.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    trA.outputColorSpace = THREE.SRGBColorSpace;
+    trB.outputColorSpace = THREE.SRGBColorSpace;
+    tctnA.appendChild(trA.domElement);
+    tctnB.appendChild(trB.domElement);
+
+    const tsA = new THREE.Scene(); tsA.background = new THREE.Color(0xffffff);
+    const tsB = new THREE.Scene(); tsB.background = new THREE.Color(0xffffff);
+
+    const tcamA = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    const tcamB = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    tcamA.up.set(0, -1, 0);
+    tcamB.up.set(0, -1, 0);
+    tcamA.position.set(0, 0, -2.5);
+    tcamB.position.set(0, 0, -2.5);
+
+    const tctrlA = new OrbitControls(tcamA, trA.domElement);
+    const tctrlB = new OrbitControls(tcamB, trB.domElement);
+    tctrlA.enableDamping = tctrlB.enableDamping = true;
+    tctrlA.dampingFactor = tctrlB.dampingFactor = 0.07;
+
+    let tSyncing = false;
+    let tSyncEnabled = true;
+    function tSyncAtoB() {
+      if (!tSyncEnabled || tSyncing) return; tSyncing = true;
+      tcamB.position.copy(tcamA.position);
+      tcamB.quaternion.copy(tcamA.quaternion);
+      tcamB.zoom = tcamA.zoom; tcamB.updateProjectionMatrix();
+      tctrlB.target.copy(tctrlA.target); tctrlB.update();
+      tSyncing = false;
+    }
+    function tSyncBtoA() {
+      if (!tSyncEnabled || tSyncing) return; tSyncing = true;
+      tcamA.position.copy(tcamB.position);
+      tcamA.quaternion.copy(tcamB.quaternion);
+      tcamA.zoom = tcamB.zoom; tcamA.updateProjectionMatrix();
+      tctrlA.target.copy(tctrlB.target); tctrlA.update();
+      tSyncing = false;
+    }
+    tctrlA.addEventListener('change', () => { _teaserNeedsRender = true; tSyncAtoB(); });
+    tctrlB.addEventListener('change', () => { _teaserNeedsRender = true; tSyncBtoA(); });
+
+    const tResizeObs = new ResizeObserver(() => {
+      fitRenderer(trA, tctnA, tcamA);
+      fitRenderer(trB, tctnB, tcamB);
+    });
+    tResizeObs.observe(tctnA); tResizeObs.observe(tctnB);
+    fitRenderer(trA, tctnA, tcamA);
+    fitRenderer(trB, tctnB, tcamB);
+
+    addLights(tsA); addLights(tsB);
+
+    let tFitDone = false;
+    let teaserPairState = {};
+
+    function loadMeshTeaser(scene, path, ldgEl, key, pairState) {
+      ldgEl.style.display = 'flex';
+      const id = (scene.userData.loadId = (scene.userData.loadId || 0) + 1);
+      gltfLoader.load(
+        path,
+        gltf => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          const obj  = gltf.scene;
+          const box  = new THREE.Box3().setFromObject(obj);
+          const { center: ctr, medDist } = computeMedianStats(obj);
+          const size  = box.getSize(new THREE.Vector3());
+          const scale = 1 / medDist;
+          obj.position.sub(ctr);
+          obj.scale.setScalar(scale);
+          scene.add(obj);
+          const yRange = setupColorVariant(obj, key === 'B' && pairState.A ? pairState.A.yRange : null);
+          const preCenter  = box.getCenter(new THREE.Vector3());
+          const gridCenterX = scale * preCenter.x - ctr.x;
+          const gridCenterZ = scale * preCenter.z - ctr.z;
+          const gridY       = scale * box.max.y - ctr.y + 0.05;
+          const gridSpan    = Math.max(size.x, size.z) * scale * 2.5;
+          pairState[key] = { scene, gridY, gridCenterX, gridCenterZ, gridSpan, obj, yRange };
+          const otherKey = key === 'A' ? 'B' : 'A';
+          if (pairState[otherKey]) {
+            const maxSpan = Math.max(gridSpan, pairState[otherKey].gridSpan);
+            [key, otherKey].forEach(k => {
+              const p = pairState[k];
+              const oldGrid = p.scene.getObjectByName('groundGrid');
+              if (oldGrid) p.scene.remove(oldGrid);
+              addGrid(p.scene, p.gridY, p.gridCenterX, p.gridCenterZ, maxSpan);
+            });
+            /* A just loaded: re-apply A's Y range to B so both share the same colormap. */
+            if (key === 'A') {
+              setupColorVariant(pairState[otherKey].obj, yRange);
+              pairState[otherKey].yRange = yRange;
+            }
+          } else {
+            addGrid(scene, gridY, gridCenterX, gridCenterZ, gridSpan);
+          }
+          if (!tFitDone) {
+            tFitDone = true;
+            const normX   = size.x * scale;
+            const normY   = size.y * scale;
+            const normZ   = size.z * scale;
+            const sphereR = Math.sqrt(normX*normX + normY*normY + normZ*normZ) / 2;
+            const vFov    = tcamA.fov * Math.PI / 180;
+            const dist    = sphereR / Math.tan(vFov / 2) * 1.1;
+            [tcamA, tcamB].forEach(c => {
+              c.position.set(0, 0, -dist);
+              c.near = dist * 0.01;
+              c.far  = dist * 100;
+              c.updateProjectionMatrix();
+            });
+            [tctrlA, tctrlB].forEach(c => { c.target.set(0, 0, 0); c.update(); });
+            const _tp = getPose('teaser', teaserCurrentScene);
+            if (_tp) { tSyncing = true; if (_tp.A) applyPose(tcamA, tctrlA, _tp.A); if (_tp.B) applyPose(tcamB, tctrlB, _tp.B); tSyncing = false; }
+          }
+          ldgEl.style.display = 'none';
+        },
+        undefined,
+        () => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          addPlaceholder(scene);
+          ldgEl.style.display = 'none';
+        }
+      );
+    }
+
+    const tSplitState = {
+      A: { frac: 0.5, line: document.getElementById('teaser-split-A'), ctn: tctnA },
+      B: { frac: 0.5, line: document.getElementById('teaser-split-B'), ctn: tctnB },
+    };
+
+    function attachTeaserSlider(key) {
+      const s = tSplitState[key];
+      const handle = s.line.querySelector('.viewer-split-handle');
+      let dragging = false;
+      function setFromClientX(clientX) {
+        const rect = s.ctn.getBoundingClientRect();
+        const f = (clientX - rect.left) / rect.width;
+        s.frac = Math.max(0, Math.min(1, f));
+        s.line.style.left = (s.frac * 100) + '%';
+        _teaserNeedsRender = true;
+      }
+      handle.addEventListener('pointerdown', e => {
+        dragging = true;
+        handle.setPointerCapture(e.pointerId);
+        e.stopPropagation();
+        e.preventDefault();
+      });
+      handle.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        setFromClientX(e.clientX);
+        e.stopPropagation();
+      });
+      handle.addEventListener('pointerup', e => {
+        dragging = false;
+        try { handle.releasePointerCapture(e.pointerId); } catch (_) {}
+      });
+    }
+    attachTeaserSlider('A');
+    attachTeaserSlider('B');
+
+    /* ------------------------------------------------------------------ */
+    /* Section 4 – Swap mesh viewers + fixed 3-option picker              */
+    /* ------------------------------------------------------------------ */
+
+    const swctnA    = document.getElementById('swap-viewer-A');
+    const swctnB    = document.getElementById('swap-viewer-B');
+    const swldgA    = document.getElementById('swap-loading-A');
+    const swldgB    = document.getElementById('swap-loading-B');
+    const swLegendA = document.getElementById('swap-legend-A');
+    const swLegendB = document.getElementById('swap-legend-B');
+
+    const swrA = new THREE.WebGLRenderer({ antialias: true });
+    const swrB = new THREE.WebGLRenderer({ antialias: true });
+    swrA.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    swrB.setPixelRatio(Math.min(window.devicePixelRatio, MAX_DPR));
+    swrA.outputColorSpace = THREE.SRGBColorSpace;
+    swrB.outputColorSpace = THREE.SRGBColorSpace;
+    swctnA.appendChild(swrA.domElement);
+    swctnB.appendChild(swrB.domElement);
+
+    const swsA = new THREE.Scene(); swsA.background = new THREE.Color(0xffffff);
+    const swsB = new THREE.Scene(); swsB.background = new THREE.Color(0xffffff);
+
+    const swcamA = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    const swcamB = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+    swcamA.up.set(0, -1, 0);
+    swcamB.up.set(0, -1, 0);
+    swcamA.position.set(0, 0, -2.5);
+    swcamB.position.set(0, 0, -2.5);
+
+    const swctrlA = new OrbitControls(swcamA, swrA.domElement);
+    const swctrlB = new OrbitControls(swcamB, swrB.domElement);
+    swctrlA.enableDamping = swctrlB.enableDamping = true;
+    swctrlA.dampingFactor = swctrlB.dampingFactor = 0.07;
+
+    let swSyncing = false;
+    let swSyncEnabled = true;
+    function swSyncAtoB() {
+      if (!swSyncEnabled || swSyncing) return; swSyncing = true;
+      swcamB.position.copy(swcamA.position);
+      swcamB.quaternion.copy(swcamA.quaternion);
+      swcamB.zoom = swcamA.zoom; swcamB.updateProjectionMatrix();
+      swctrlB.target.copy(swctrlA.target); swctrlB.update();
+      swSyncing = false;
+    }
+    function swSyncBtoA() {
+      if (!swSyncEnabled || swSyncing) return; swSyncing = true;
+      swcamA.position.copy(swcamB.position);
+      swcamA.quaternion.copy(swcamB.quaternion);
+      swcamA.zoom = swcamB.zoom; swcamA.updateProjectionMatrix();
+      swctrlA.target.copy(swctrlB.target); swctrlA.update();
+      swSyncing = false;
+    }
+    swctrlA.addEventListener('change', () => { _swapNeedsRender = true; swSyncAtoB(); });
+    swctrlB.addEventListener('change', () => { _swapNeedsRender = true; swSyncBtoA(); });
+
+    const swResizeObs = new ResizeObserver(() => {
+      fitRenderer(swrA, swctnA, swcamA);
+      fitRenderer(swrB, swctnB, swcamB);
+    });
+    swResizeObs.observe(swctnA); swResizeObs.observe(swctnB);
+    fitRenderer(swrA, swctnA, swcamA);
+    fitRenderer(swrB, swctnB, swcamB);
+
+    addLights(swsA); addLights(swsB);
+
+    let swFitDone = false;
+    let swapPairState = {};
+
+    function loadMeshSwap(scene, path, ldgEl, key, pairState) {
+      ldgEl.style.display = 'flex';
+      const id = (scene.userData.loadId = (scene.userData.loadId || 0) + 1);
+      gltfLoader.load(
+        path,
+        gltf => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          const obj  = gltf.scene;
+          const box  = new THREE.Box3().setFromObject(obj);
+          const { center: ctr, medDist } = computeMedianStats(obj);
+          const size  = box.getSize(new THREE.Vector3());
+          const scale = 1 / medDist;
+          obj.position.sub(ctr);
+          obj.scale.setScalar(scale);
+          scene.add(obj);
+          const yRange = setupColorVariant(obj, key === 'B' && pairState.A ? pairState.A.yRange : null);
+          const preCenter  = box.getCenter(new THREE.Vector3());
+          const gridCenterX = scale * preCenter.x - ctr.x;
+          const gridCenterZ = scale * preCenter.z - ctr.z;
+          const gridY       = scale * box.max.y - ctr.y + 0.05;
+          const gridSpan    = Math.max(size.x, size.z) * scale * 2.5;
+          pairState[key] = { scene, gridY, gridCenterX, gridCenterZ, gridSpan, obj, yRange };
+          const otherKey = key === 'A' ? 'B' : 'A';
+          if (pairState[otherKey]) {
+            const maxSpan = Math.max(gridSpan, pairState[otherKey].gridSpan);
+            [key, otherKey].forEach(k => {
+              const p = pairState[k];
+              const oldGrid = p.scene.getObjectByName('groundGrid');
+              if (oldGrid) p.scene.remove(oldGrid);
+              addGrid(p.scene, p.gridY, p.gridCenterX, p.gridCenterZ, maxSpan);
+            });
+            /* A just loaded: re-apply A's Y range to B so both share the same colormap. */
+            if (key === 'A') {
+              setupColorVariant(pairState[otherKey].obj, yRange);
+              pairState[otherKey].yRange = yRange;
+            }
+          } else {
+            addGrid(scene, gridY, gridCenterX, gridCenterZ, gridSpan);
+          }
+          if (!swFitDone) {
+            swFitDone = true;
+            const normX   = size.x * scale;
+            const normY   = size.y * scale;
+            const normZ   = size.z * scale;
+            const sphereR = Math.sqrt(normX*normX + normY*normY + normZ*normZ) / 2;
+            const vFov    = swcamA.fov * Math.PI / 180;
+            const dist    = sphereR / Math.tan(vFov / 2) * 1.1;
+            [swcamA, swcamB].forEach(c => {
+              c.position.set(0, 0, -dist);
+              c.near = dist * 0.01;
+              c.far  = dist * 100;
+              c.updateProjectionMatrix();
+            });
+            [swctrlA, swctrlB].forEach(c => { c.target.set(0, 0, 0); c.update(); });
+            const _sp = getPose('swap', swapActive);
+            if (_sp) { swSyncing = true; if (_sp.A) applyPose(swcamA, swctrlA, _sp.A); if (_sp.B) applyPose(swcamB, swctrlB, _sp.B); swSyncing = false; }
+          }
+          ldgEl.style.display = 'none';
+        },
+        undefined,
+        () => {
+          if (scene.userData.loadId !== id) return;
+          clearScene(scene);
+          addPlaceholder(scene);
+          ldgEl.style.display = 'none';
+        }
+      );
+    }
+
+    const swSplitState = {
+      A: { frac: 0.5, line: document.getElementById('swap-split-A'), ctn: swctnA },
+      B: { frac: 0.5, line: document.getElementById('swap-split-B'), ctn: swctnB },
+    };
+
+    function attachSwapSlider(key) {
+      const s = swSplitState[key];
+      const handle = s.line.querySelector('.viewer-split-handle');
+      let dragging = false;
+      function setFromClientX(clientX) {
+        const rect = s.ctn.getBoundingClientRect();
+        const f = (clientX - rect.left) / rect.width;
+        s.frac = Math.max(0, Math.min(1, f));
+        s.line.style.left = (s.frac * 100) + '%';
+        _swapNeedsRender = true;
+      }
+      handle.addEventListener('pointerdown', e => {
+        dragging = true;
+        handle.setPointerCapture(e.pointerId);
+        e.stopPropagation();
+        e.preventDefault();
+      });
+      handle.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        setFromClientX(e.clientX);
+        e.stopPropagation();
+      });
+      handle.addEventListener('pointerup', e => {
+        dragging = false;
+        try { handle.releasePointerCapture(e.pointerId); } catch (_) {}
+      });
+    }
+    attachSwapSlider('A');
+    attachSwapSlider('B');
+
+    const swapRoot = document.getElementById('swap-options');
+    let swapActive = 0;
+
+    function renderSwap() {
+      swapRoot.innerHTML = '';
+      swapItems.forEach((item, i) => {
+        const el  = document.createElement('div');
+        el.className = 'fixed-option' + (i === swapActive ? ' active' : '');
+        const img = document.createElement('img');
+        img.src     = item.thumb;
+        img.alt     = `Option ${i + 1}`;
+        img.loading = 'lazy';
+        el.appendChild(img);
+        el.addEventListener('click', () => {
+          swapActive = i;
+          swFitDone = false;
+          swapPairState = {};
+          renderSwap();
+          loadMeshSwap(swsA, item.meshA, swldgA, 'A', swapPairState);
+          loadMeshSwap(swsB, item.meshB, swldgB, 'B', swapPairState);
+        });
+        swapRoot.appendChild(el);
+      });
+    }
+    renderSwap();
+
+    /* Shared animation loop — skips off-screen sections entirely */
+    const _FRAME_MS = 1000 / TARGET_FPS;
+    let _lastFrameTime = 0;
+    /* Dirty flags: set by camera-change events and split-handle drags.
+       Teaser/swap also re-render at the throttled rate for the phase animation.
+       Upright has no animation so it only renders on dirty. */
+    let _teaserNeedsRender  = false;
+    let _swapNeedsRender    = false;
+    let _uprightNeedsRender = false;
+    const _clock = new THREE.Clock();
+    (function loop(ts) {
+      requestAnimationFrame(loop);
+
+      /* Always tick controls at 60 fps so damping resolves smoothly and
+         change events fire — those events set the dirty flags below. */
+      if (teaserVisible)  { tctrlA.update();  tctrlB.update();  }
+      if (swapVisible)    { swctrlA.update(); swctrlB.update(); }
+      if (uprightVisible) { ctrlA.update();   ctrlB.update();   }
+
+      const timeReady = ts - _lastFrameTime >= _FRAME_MS;
+      if (timeReady) _lastFrameTime = ts;
+
+      const phase = _clock.getElapsedTime() * PHASE_SPEED;
+
+      /* Teaser: render on camera/split change OR at throttled rate for phase animation. */
+      if (teaserVisible && (_teaserNeedsRender || timeReady)) {
+        _teaserNeedsRender = false;
+        const tYRange = teaserPairState.A?.yRange ?? teaserPairState.B?.yRange ?? null;
+        updateSplitUniforms(tsA, phase, tSplitState.A.frac * trA.domElement.width);
+        trA.render(tsA, tcamA);
+        updateSplitUniforms(tsB, phase, tSplitState.B.frac * trB.domElement.width);
+        trB.render(tsB, tcamB);
+        drawInfernoLegend(tLegendA, phase, tYRange);
+        drawInfernoLegend(tLegendB, phase, tYRange);
+      }
+
+      /* Swap: same as teaser. */
+      if (swapVisible && (_swapNeedsRender || timeReady)) {
+        _swapNeedsRender = false;
+        const swYRange = swapPairState.A?.yRange ?? swapPairState.B?.yRange ?? null;
+        updateSplitUniforms(swsA, phase, swSplitState.A.frac * swrA.domElement.width);
+        swrA.render(swsA, swcamA);
+        updateSplitUniforms(swsB, phase, swSplitState.B.frac * swrB.domElement.width);
+        swrB.render(swsB, swcamB);
+        drawInfernoLegend(swLegendA, phase, swYRange);
+        drawInfernoLegend(swLegendB, phase, swYRange);
+      }
+
+      /* Upright: no animation — only render when camera actually changed. */
+      if (uprightVisible && _uprightNeedsRender) {
+        _uprightNeedsRender = false;
+        rA.render(sA, camA);
+        rB.render(sB, camB);
+      }
+
+      /* Align: continuous scatter animation — always render at throttled rate. */
+      if (alignVisible && alignVggt.cam && timeReady) {
+        let alignElapsedSec;
+        if (_alignPaused) {
+          alignElapsedSec = _alignElapsedAtPause;
+        } else {
+          alignElapsedSec = _alignClock.getElapsedTime() - _alignTotalPauseMs / 1000;
+        }
+        const alignElapsed = alignElapsedSec % ALIGN_CYCLE;
+        const alignT = Math.min(1.0, alignElapsed / ALIGN_ANIM_DURATION);
+        alignVggt.update(alignT);
+        alignG3t.update(alignT);
+      }
+    })();
+
+    /* Upright scene buttons + 5-image strip */
+    const uprightSceneBtns  = document.querySelectorAll('#upright-scene-btns .scene-btn');
+    const uprightImageStrip = document.getElementById('upright-input-images');
+
+    function renderUprightImages(sceneIdx) {
+      uprightImageStrip.innerHTML = '';
+      uprightItems[sceneIdx].images.forEach((src, j) => {
+        const img = document.createElement('img');
+        img.src     = src;
+        img.alt     = `Scene ${sceneIdx + 1} input ${j + 1}`;
+        img.loading = 'lazy';
+        uprightImageStrip.appendChild(img);
+      });
+    }
+
+    uprightSceneBtns.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        uprightSceneBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        uprightCurrentScene = i;
+        fitDone = false;
+        uprightPairState = {};
+        renderUprightImages(i);
+        loadMesh(sA, uprightItems[i].meshA, ldgA, 'A', uprightPairState);
+        loadMesh(sB, uprightItems[i].meshB, ldgB, 'B', uprightPairState);
+      });
+    });
+    renderUprightImages(0);
+
+    /* Fetch pose config; teaser loads immediately, other sections load lazily on scroll */
+    fetch(CONFIG_JSON_PATH)
+      .then(r => r.ok ? r.json() : null).catch(() => null)
+      .then(json => {
+        if (json) {
+          poseConfig = json;
+        } else {
+          const _ls = localStorage.getItem(CONFIG_STORAGE_KEY);
+          if (_ls) { try { poseConfig = JSON.parse(_ls); } catch (_) {} }
+        }
+        poseConfigReady = true;
+        loadMeshTeaser(tsA, teaserItems[0].meshA, tldgA, 'A', teaserPairState);
+        loadMeshTeaser(tsB, teaserItems[0].meshB, tldgB, 'B', teaserPairState);
+        tryLoadSwap();
+        tryLoadUpright();
+      });
+
+    /* ------------------------------------------------------------------ */
+    /* Lazy-load helpers + IntersectionObserver                            */
+    /* ------------------------------------------------------------------ */
+
+    function tryLoadSwap() {
+      if (!poseConfigReady || swapInitLoaded) return;
+      swapInitLoaded = true;
+      loadMeshSwap(swsA, swapItems[0].meshA, swldgA, 'A', swapPairState);
+      loadMeshSwap(swsB, swapItems[0].meshB, swldgB, 'B', swapPairState);
+    }
+
+    function tryLoadUpright() {
+      if (!poseConfigReady || uprightInitLoaded) return;
+      uprightInitLoaded = true;
+      loadMesh(sA, uprightItems[0].meshA, ldgA, 'A', uprightPairState);
+      loadMesh(sB, uprightItems[0].meshB, ldgB, 'B', uprightPairState);
+    }
+
+    function tryInitAlign() {
+      if (alignInitialized) return;
+      alignInitialized = true;
+      _alignClock.start();
+      const vggt = createAlignViewer({
+        containerId: 'align-viewer-vggt',
+        loadingId:   'align-loading-vggt',
+        posesUrl:    ALIGN_VGGT_POSES,
+        glbUrlFn:    ALIGN_VGGT_GLB_FN,
+        onReady: ({ cam, ctrl }) => {
+          const saved = getPose('align', 0);
+          if (saved && saved.A) applyPose(cam, ctrl, saved.A);
+        },
+      });
+      const g3t = createAlignViewer({
+        containerId: 'align-viewer-g3t',
+        loadingId:   'align-loading-g3t',
+        posesUrl:    ALIGN_G3T_POSES,
+        glbUrlFn:    ALIGN_G3T_GLB_FN,
+        onReady: ({ cam, ctrl }) => {
+          const saved = getPose('align', 0);
+          if (saved && saved.B) applyPose(cam, ctrl, saved.B);
+        },
+      });
+      alignVggt = vggt;
+      alignG3t  = g3t;
+      vggt.ctrl.addEventListener('change', alignSyncVggtToG3t);
+      g3t.ctrl.addEventListener('change', alignSyncG3tToVggt);
+    }
+
+    /* Pause/play buttons for the align animation (one per viewer, synced) */
+    function toggleAlignPause() {
+      const btns = document.querySelectorAll('.align-pause-btn');
+      if (_alignPaused) {
+        _alignTotalPauseMs += performance.now() - _alignPauseStartMs;
+        _alignPaused = false;
+        btns.forEach(b => { b.innerHTML = '<i class="fa-solid fa-pause"></i>'; b.setAttribute('aria-label', 'Pause animation'); });
+      } else {
+        _alignElapsedAtPause = _alignClock.getElapsedTime() - _alignTotalPauseMs / 1000;
+        _alignPauseStartMs = performance.now();
+        _alignPaused = true;
+        btns.forEach(b => { b.innerHTML = '<i class="fa-solid fa-play"></i>'; b.setAttribute('aria-label', 'Play animation'); });
+      }
+    }
+    document.querySelectorAll('.align-pause-btn').forEach(b => b.addEventListener('click', toggleAlignPause));
+
+    /* Pause rendering + trigger lazy loads as sections enter/leave viewport */
+    const _sectionObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        switch (e.target.id) {
+          case 'teaser':
+            teaserVisible = e.isIntersecting;
+            break;
+          case 'swap':
+            swapVisible = e.isIntersecting;
+            if (e.isIntersecting) tryLoadSwap();
+            break;
+          case 'upright':
+            uprightVisible = e.isIntersecting;
+            if (e.isIntersecting) tryLoadUpright();
+            break;
+          case 'alignment':
+            alignVisible = e.isIntersecting;
+            if (e.isIntersecting) tryInitAlign();
+            break;
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+    ['teaser', 'swap', 'upright', 'alignment'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) _sectionObs.observe(el);
+    });
+
+    /* Dev mode UI — only visible when DEV_MODE = true */
+    if (DEV_MODE) {
+      function insertDevPanel(afterEl, onSave, syncConfig) {
+        const panel = document.createElement('div');
+        panel.className = 'dev-panel';
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'dev-save-btn';
+        saveBtn.textContent = 'Save Current Pose';
+        saveBtn.addEventListener('click', () => {
+          const msg = onSave();
+          saveBtn.textContent = msg || 'Saved!';
+          setTimeout(() => { saveBtn.textContent = 'Save Current Pose'; }, 2000);
+        });
+        panel.appendChild(saveBtn);
+
+        if (syncConfig) {
+          const syncBtn = document.createElement('button');
+          syncBtn.className = 'dev-save-btn';
+          syncBtn.style.marginLeft = '8px';
+          syncBtn.textContent = 'Unsync Viewers';
+          syncBtn.addEventListener('click', () => {
+            syncConfig.toggle();
+            const synced = syncConfig.isSynced();
+            syncBtn.textContent    = synced ? 'Unsync Viewers' : 'Re-sync Viewers';
+            syncBtn.style.borderColor = synced ? '' : '#dc2626';
+            syncBtn.style.color       = synced ? '' : '#dc2626';
+          });
+          panel.appendChild(syncBtn);
+        }
+
+        afterEl.parentNode.insertBefore(panel, afterEl.nextSibling);
+      }
+
+      insertDevPanel(
+        document.querySelector('#teaser .viewer-pair'),
+        () => {
+          setPose('teaser', teaserCurrentScene, { A: capturePose(tcamA, tctrlA), B: capturePose(tcamB, tctrlB) });
+          return `Saved! (teaser scene ${teaserCurrentScene + 1})`;
+        },
+        {
+          isSynced: () => tSyncEnabled,
+          toggle: () => {
+            tSyncEnabled = !tSyncEnabled;
+            if (tSyncEnabled) {
+              tSyncing = true;
+              tcamB.position.copy(tcamA.position); tcamB.quaternion.copy(tcamA.quaternion);
+              tcamB.zoom = tcamA.zoom; tcamB.updateProjectionMatrix();
+              tctrlB.target.copy(tctrlA.target); tctrlB.update();
+              tSyncing = false;
+            }
+          },
+        }
+      );
+      insertDevPanel(
+        document.querySelector('#swap .viewer-pair'),
+        () => {
+          setPose('swap', swapActive, { A: capturePose(swcamA, swctrlA), B: capturePose(swcamB, swctrlB) });
+          return `Saved! (swap option ${swapActive + 1})`;
+        },
+        {
+          isSynced: () => swSyncEnabled,
+          toggle: () => {
+            swSyncEnabled = !swSyncEnabled;
+            if (swSyncEnabled) {
+              swSyncing = true;
+              swcamB.position.copy(swcamA.position); swcamB.quaternion.copy(swcamA.quaternion);
+              swcamB.zoom = swcamA.zoom; swcamB.updateProjectionMatrix();
+              swctrlB.target.copy(swctrlA.target); swctrlB.update();
+              swSyncing = false;
+            }
+          },
+        }
+      );
+      insertDevPanel(
+        document.querySelector('#alignment .align-pair'),
+        () => {
+          setPose('align', 0, { A: capturePose(alignVggt.cam, alignVggt.ctrl), B: capturePose(alignG3t.cam, alignG3t.ctrl) });
+          return 'Saved! (alignment)';
+        },
+        {
+          isSynced: () => alignSyncEnabled,
+          toggle: () => {
+            alignSyncEnabled = !alignSyncEnabled;
+            if (alignSyncEnabled) {
+              alignSyncing = true;
+              alignG3t.cam.position.copy(alignVggt.cam.position); alignG3t.cam.quaternion.copy(alignVggt.cam.quaternion);
+              alignG3t.cam.zoom = alignVggt.cam.zoom; alignG3t.cam.updateProjectionMatrix();
+              alignG3t.ctrl.target.copy(alignVggt.ctrl.target); alignG3t.ctrl.update();
+              alignSyncing = false;
+            }
+          },
+        }
+      );
+      insertDevPanel(
+        document.querySelector('#upright .viewer-pair'),
+        () => {
+          setPose('upright', uprightCurrentScene, { A: capturePose(camA, ctrlA), B: capturePose(camB, ctrlB) });
+          return `Saved! (upright scene ${uprightCurrentScene + 1})`;
+        },
+        {
+          isSynced: () => uprightSyncEnabled,
+          toggle: () => {
+            uprightSyncEnabled = !uprightSyncEnabled;
+            if (uprightSyncEnabled) {
+              syncing = true;
+              camB.position.copy(camA.position); camB.quaternion.copy(camA.quaternion);
+              camB.zoom = camA.zoom; camB.updateProjectionMatrix();
+              ctrlB.target.copy(ctrlA.target); ctrlB.update();
+              syncing = false;
+            }
+          },
+        }
+      );
+
+      const exportWrap = document.createElement('div');
+      exportWrap.className = 'dev-export-wrap';
+      const devBadge = document.createElement('span');
+      devBadge.className = 'dev-badge';
+      devBadge.textContent = 'DEV MODE';
+      const exportBtn = document.createElement('button');
+      exportBtn.className = 'dev-export-btn';
+      exportBtn.textContent = 'Export viewer_config.json';
+      exportBtn.addEventListener('click', exportConfigJSON);
+      exportWrap.appendChild(devBadge);
+      exportWrap.appendChild(exportBtn);
+      document.body.appendChild(exportWrap);
+    }
+  </script>
+
+  <footer class="site-footer">
+    <p>This website template is borrowed from <a href="https://nerfies.github.io" target="_blank">Nerfies</a>.</p>
+  </footer>
+</body>
+</html>
